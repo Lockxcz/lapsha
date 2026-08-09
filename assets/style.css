@@ -15,7 +15,9 @@
   --font-mono:'JetBrains Mono', monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth; overflow-x:hidden;}
+body{overflow-x:hidden;}
+p,h1,h2,h3,h4,span,div{ overflow-wrap:break-word; }
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}
   *,*::before,*::after{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
@@ -94,22 +96,23 @@ img{max-width:100%; display:block;}
 .spirit-group{ margin-bottom:36px;}
 .spirit-group h4{ font-family:var(--font-head); font-size:18px; font-weight:450; color:var(--gold-bright); margin-bottom:16px;}
 
-.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;}
-.card{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; transition:.2s; overflow:hidden;}
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; min-width:0;}
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; transition:.2s; overflow:hidden; min-width:0; max-width:100%;}
 .card:hover{ border-color:var(--line-strong);}
-.card-photo{ width:calc(100% + 40px); margin:-18px -20px 14px; aspect-ratio:16/10; object-fit:cover; background:var(--surface-2);}
-.card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
-.card h3{ font-family:var(--font-head); font-size:19px; font-weight:500; color:var(--text);}
-.eng{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:2px;}
-.teaser{ color:var(--text-muted); font-size:13.5px; line-height:1.65; margin-top:8px;}
-details{ margin-top:12px; border-top:1px dashed var(--line); padding-top:10px;}
+.card-photo-wrap{ width:calc(100% + 40px); margin:-18px -20px 14px; aspect-ratio:4/3; background:var(--surface-2); overflow:hidden; position:relative;}
+.card-photo{ width:100%; height:100%; object-fit:cover; object-position:center; background:var(--surface-2); display:block;}
+.card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; min-width:0;}
+.card h3{ font-family:var(--font-head); font-size:19px; font-weight:500; color:var(--text); overflow-wrap:anywhere; word-break:break-word;}
+.eng{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:2px; overflow-wrap:anywhere;}
+.teaser{ color:var(--text-muted); font-size:13.5px; line-height:1.65; margin-top:8px; overflow-wrap:anywhere; word-break:break-word;}
+details{ margin-top:12px; border-top:1px dashed var(--line); padding-top:10px; max-width:100%; overflow-wrap:anywhere;}
 summary{ cursor:pointer; font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); list-style:none;}
 summary::-webkit-details-marker{ display:none;}
 summary::before{ content:'+ '; }
 details[open] summary::before{ content:'− ';}
-.detail-row{ font-size:13px; color:var(--text-muted); margin-top:8px; line-height:1.6;}
+.detail-row{ font-size:13px; color:var(--text-muted); margin-top:8px; line-height:1.6; overflow-wrap:anywhere; word-break:break-word; max-width:100%;}
 .detail-row .k{ display:block; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-dim); margin-bottom:2px;}
-.present{ margin-top:12px; font-family:var(--font-head); font-style:italic; font-size:13.5px; color:var(--gold-bright); line-height:1.6; padding-top:10px; border-top:1px dashed var(--line);}
+.present{ margin-top:12px; font-family:var(--font-head); font-style:italic; font-size:13.5px; color:var(--gold-bright); line-height:1.6; padding-top:10px; border-top:1px dashed var(--line); overflow-wrap:anywhere; word-break:break-word;}
 
 .spirit-list{ display:flex; flex-direction:column; gap:2px;}
 .spirit-item{ display:flex; justify-content:space-between; gap:20px; padding:11px 4px; border-bottom:1px solid var(--line); font-size:14px;}
@@ -139,4 +142,9 @@ footer{ max-width:1200px; margin:60px auto 0; padding:30px 24px; border-top:1px 
   .toc{ grid-template-columns:1fr;}
   .navbar-inner{ gap:10px;}
   .search-wrap{ order:3; max-width:none; flex:1 1 100%;}
+}
+@media (max-width:360px){
+  .grid{ grid-template-columns:1fr;}
+  .card{ padding:16px;}
+  .card-photo-wrap{ width:calc(100% + 32px); margin:-16px -16px 14px;}
 }
