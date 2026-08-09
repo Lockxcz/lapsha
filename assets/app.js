@@ -80,7 +80,7 @@
       if(item.presentation) detail += `<div class="present">«${esc(item.presentation)}»</div>`;
       detail += `</details>`;
     }
-    const photo = item.image_url ? `<img class="card-photo" loading="lazy" src="${publicUrl(item.image_url)}" alt="${esc(item.name)}">` : '';
+    const photo = item.image_url ? `<div class="card-photo-wrap"><img class="card-photo" loading="lazy" decoding="async" src="${publicUrl(item.image_url)}" alt="${esc(item.name)}" onerror="this.closest('.card-photo-wrap').remove()"></div>` : '';
     const searchBlob = [item.name,item.name_en,item.teaser,item.taste,item.aroma,item.aftertaste,item.composition,item.who_for,item.fact,item.presentation,(item.mood_tags||[]).join(' ')].join(' ').toLowerCase();
     return `<div class="card" data-search="${esc(searchBlob)}" data-tags="${esc((item.mood_tags||[]).join('|').toLowerCase())}">
       ${photo}
