@@ -37,6 +37,7 @@
     <div class="side-link active" data-view="settings">Общие настройки</div>
     <div class="side-link" data-view="categories">Категории</div>
     <div class="side-link" data-view="items">Напитки</div>
+    <div class="side-link" data-view="import">Импорт из файла</div>
     <div class="spacer"></div>
     <a class="side-link" href="../index.html" target="_blank">↗ Открыть сайт</a>
     <div class="logout-link" id="logoutBtn">Выйти</div>
@@ -110,6 +111,25 @@
           <thead><tr><th>Фото</th><th>Название</th><th>Группа</th><th>Показ</th><th></th></tr></thead>
           <tbody id="itemsTable"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- IMPORT VIEW -->
+    <div id="view-import" style="display:none">
+      <h2>Импорт из файла</h2>
+      <div class="sub">Массовая загрузка напитков из JSON-файла (например, готовый файл, собранный из PDF-гида). Категории должны существовать заранее — сверяются по «ярлыку» (slug); группы создаются автоматически, если их ещё нет.</div>
+      <div class="panel">
+        <div class="field">
+          <label>Файл .json</label>
+          <input type="file" id="importFile" accept="application/json">
+        </div>
+        <div class="field">
+          <label>...или вставьте JSON сюда</label>
+          <textarea id="importJson" rows="8" placeholder='{"items":[{"category_slug":"coffee","name":"Эспрессо", "teaser":"...", "taste":"...", ...}]}'></textarea>
+        </div>
+        <button class="btn" id="runImportBtn">Импортировать</button>
+        <span class="ok-msg" id="importOk" style="margin-left:12px;"></span>
+        <div id="importLog" style="margin-top:16px; font-size:13px; line-height:1.7; max-height:300px; overflow:auto;"></div>
       </div>
     </div>
 
