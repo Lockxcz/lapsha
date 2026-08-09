@@ -23,10 +23,55 @@
     return data ? data.publicUrl : '';
   }
 
+  // HEIC/HEIF (стандартный формат фото на iPhone) браузеры не умеют показывать
+  // на сайте — ни на телефоне, ни на компьютере. Ловим это до загрузки.
+  function isHeic(file){
+    const name = (file.name||'').toLowerCase();
+    return /\.(heic|heif)$/.test(name) || /heic|heif/.test(file.type||'');
+  }
+
+  // Приводим фото к разумному размеру и формату JPEG перед загрузкой:
+  // - убирает вес (быстрее грузится на телефонах гостей/официантов);
+  // - канвас всегда рисует картинку с учётом её реальной ориентации,
+  //   поэтому вертикальные фото с телефона больше не обрезаются криво.
+  function processImage(file, maxSize){
+    return new Promise((resolve, reject)=>{
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = ()=>{
+        let { width, height } = img;
+        if(width > maxSize || height > maxSize){
+          if(width > height){ height = Math.round(height * maxSize/width); width = maxSize; }
+          else { width = Math.round(width * maxSize/height); height = maxSize; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        canvas.toBlob(blob=>{
+          URL.revokeObjectURL(url);
+          if(!blob){ reject(new Error('Не удалось обработать изображение')); return; }
+          resolve(blob);
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('Файл повреждён или формат не поддерживается браузером')); };
+      img.src = url;
+    });
+  }
+
   async function uploadFile(file, prefix){
-    const ext = file.name.split('.').pop();
+    if(isHeic(file)){
+      toast('Это HEIC-фото (формат iPhone) — браузеры его не показывают. На iPhone: Настройки → Камера → Форматы → «Наиболее совместимые», затем переснимите/пересохраните фото и загрузите заново.', true);
+      throw new Error('HEIC not supported');
+    }
+    let blob = file, ext = 'jpg';
+    try{
+      blob = await processImage(file, 1600);
+    }catch(err){
+      toast('Не удалось обработать фото: '+err.message, true);
+      throw err;
+    }
     const path = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
-    const { error } = await sb.storage.from(BUCKET).upload(path, file, { upsert:false });
+    const { error } = await sb.storage.from(BUCKET).upload(path, blob, { upsert:false, contentType:'image/jpeg' });
     if(error){ toast('Ошибка загрузки файла: '+error.message, true); throw error; }
     return path;
   }
@@ -69,7 +114,7 @@
     link.addEventListener('click', ()=>{
       document.querySelectorAll('.side-link[data-view]').forEach(l=>l.classList.remove('active'));
       link.classList.add('active');
-      ['settings','categories','items'].forEach(v=>{
+      ['settings','categories','items','import'].forEach(v=>{
         $('view-'+v).style.display = (v===link.dataset.view) ? '' : 'none';
       });
     });
@@ -336,6 +381,110 @@
     if(error){ toast('Ошибка: '+error.message, true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток удалён');
+    loadItemsTable();
+  });
+
+  // ============================================================
+  // IMPORT (bulk items from JSON — e.g. generated from the PDF guide)
+  // ============================================================
+  const importLog = $('importLog');
+  function logLine(msg, isError){
+    const row = document.createElement('div');
+    row.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+    row.textContent = msg;
+    importLog.appendChild(row);
+    importLog.scrollTop = importLog.scrollHeight;
+  }
+
+  $('importFile').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=> { $('importJson').value = reader.result; };
+    reader.readAsText(file);
+  });
+
+  $('runImportBtn').addEventListener('click', async ()=>{
+    importLog.innerHTML = '';
+    $('importOk').textContent = '';
+    let payload;
+    try{
+      payload = JSON.parse($('importJson').value);
+    }catch(err){
+      toast('Файл не является корректным JSON: '+err.message, true);
+      return;
+    }
+    const rows = Array.isArray(payload) ? payload : (payload.items || []);
+    if(!rows.length){ toast('В файле нет напитков для импорта (ожидается массив items)', true); return; }
+
+    $('runImportBtn').disabled = true;
+    logLine(`Найдено позиций: ${rows.length}. Начинаю импорт...`);
+
+    const { data: allCats } = await sb.from('categories').select('id,slug,title');
+    const catBySlug = {};
+    (allCats||[]).forEach(c=> catBySlug[c.slug] = c);
+
+    const groupCache = {}; // key: categoryId + '::' + title -> group id
+
+    async function getOrCreateGroup(categoryId, title){
+      if(!title) return null;
+      const key = categoryId + '::' + title;
+      if(groupCache[key]) return groupCache[key];
+      const { data: existing } = await sb.from('item_groups').select('id').eq('category_id', categoryId).eq('title', title).maybeSingle();
+      if(existing){ groupCache[key] = existing.id; return existing.id; }
+      const { data: created, error } = await sb.from('item_groups').insert({ category_id: categoryId, title, sort_order: 0 }).select('id').single();
+      if(error){ throw error; }
+      groupCache[key] = created.id;
+      return created.id;
+    }
+
+    let ok = 0, failed = 0, skipped = 0;
+    for(const row of rows){
+      const slug = row.category_slug || row.category || '';
+      const cat = catBySlug[slug];
+      if(!cat){
+        logLine(`✕ Пропущено «${row.name||'(без имени)'}» — категория «${slug}» не найдена. Создайте её на вкладке «Категории».`, true);
+        skipped++; continue;
+      }
+      if(!row.name){
+        logLine(`✕ Пропущена строка без названия`, true);
+        skipped++; continue;
+      }
+      try{
+        const groupId = row.group_title ? await getOrCreateGroup(cat.id, row.group_title) : null;
+        const item = {
+          category_id: cat.id,
+          group_id: groupId,
+          name: row.name,
+          name_en: row.name_en || '',
+          teaser: row.teaser || '',
+          composition: row.composition || '',
+          taste: row.taste || '',
+          aroma: row.aroma || '',
+          aftertaste: row.aftertaste || '',
+          who_for: row.who_for || '',
+          presentation: row.presentation || '',
+          fact: row.fact || '',
+          pairing: row.pairing || '',
+          country: row.country || '',
+          price: row.price || '',
+          mood_tags: Array.isArray(row.mood_tags) ? row.mood_tags : (row.mood_tags ? String(row.mood_tags).split(',').map(s=>s.trim()).filter(Boolean) : []),
+          sort_order: row.sort_order || 0,
+          published: row.published !== false,
+        };
+        const { error } = await sb.from('items').insert(item);
+        if(error) throw error;
+        ok++;
+      }catch(err){
+        logLine(`✕ Ошибка при добавлении «${row.name}»: ${err.message}`, true);
+        failed++;
+      }
+    }
+
+    logLine(`Готово: добавлено ${ok}, пропущено ${skipped}, ошибок ${failed}.`);
+    $('importOk').textContent = `Импорт завершён: ${ok} добавлено`;
+    $('runImportBtn').disabled = false;
+    toast(`Импорт завершён: добавлено ${ok} из ${rows.length}`);
     loadItemsTable();
   });
 
