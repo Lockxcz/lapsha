@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Гид по барному меню</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <a href="#top" class="nav-brand" id="navBrand">Гид</a>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="search" type="text" placeholder="Поиск по вкусу, аромату, названию…">
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<div class="active-filter-bar" id="filterBar">
+  <span class="lbl">Фильтр:</span>
+  <span class="tag active" id="activeTagLabel"></span>
+  <button class="clear-filter" id="clearFilter">Сбросить</button>
+</div>
+
+<section class="hero" id="top">
+  <div id="heroLogo"></div>
+  <div class="hero-eyebrow" id="heroEyebrow">ГИД ПО БАРНОМУ МЕНЮ</div>
+  <h1 id="heroTitle">Гид по <em>барному</em> меню</h1>
+  <p class="lead" id="heroSubtitle">Для обучения сотрудников ресторана</p>
+  <p class="hero-quote" id="heroQuote">«Мы не просто подаём напитки — мы создаём впечатления.»</p>
+</section>
+
+<div class="intro">
+  <div class="intro-grid">
+    <div class="intro-label">О гиде</div>
+    <div class="intro-body">
+      <p>Бар — это сердце атмосферы ресторана. Каждый напиток, который мы подаём, отражает качество, философию и характер заведения.</p>
+      <p>Этот гид создан для того, чтобы каждый сотрудник уверенно ориентировался в барном меню, понимал особенности напитков и мог помочь гостю сделать лучший выбор.</p>
+      <div class="toc" id="toc"></div>
+    </div>
+  </div>
+</div>
+
+<main id="sections"></main>
+<div id="noResults">Ничего не найдено</div>
+
+<footer>LAPSHA BAR WOK · Гид по барному меню · Только для сотрудников</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Наверх" title="Наверх">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фото">
+  <div class="lightbox-figure">
+    <span class="lightbox-count" id="lightboxCount"></span>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+<button class="lightbox-nav prev" id="lightboxPrev" aria-label="Предыдущее фото" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="lightbox-nav next" id="lightboxNext" aria-label="Следующее фото" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<script src="assets/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="assets/icons.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

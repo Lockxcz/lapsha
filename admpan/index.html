@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админ-панель · Гид</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-box">
+    <h1>Админ-панель</h1>
+    <p>Вход только для сотрудников с доступом к редактированию гида.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Пароль</label>
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </div>
+      <button class="btn" type="submit" style="width:100%">Войти</button>
+      <div class="error-msg" id="loginError"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div class="admin-shell" id="adminShell" style="display:none">
+  <div class="sidebar">
+    <div class="brand">Гид · Админ</div>
+    <div class="side-link active" data-view="settings">Общие настройки</div>
+    <div class="side-link" data-view="categories">Категории</div>
+    <div class="side-link" data-view="items">Напитки</div>
+    <div class="side-link" data-view="import">Импорт из файла</div>
+    <div class="spacer"></div>
+    <a class="side-link" href="../index.html" target="_blank">↗ Открыть сайт</a>
+    <div class="logout-link" id="logoutBtn">Выйти</div>
+  </div>
+  <div class="content">
+
+    <!-- SETTINGS VIEW -->
+    <div id="view-settings">
+      <h2>Общие настройки</h2>
+      <div class="sub">Логотип, тексты шапки и цвета оформления. Изменения сразу появляются на сайте.</div>
+
+      <div class="panel">
+        <h3>Бренд</h3>
+        <div class="field"><label>Название заведения</label><input id="s_site_title"></div>
+        <div class="row2">
+          <div class="field"><label>Надпись над заголовком</label><input id="s_hero_eyebrow"></div>
+          <div class="field"><label>Подзаголовок</label><input id="s_hero_subtitle"></div>
+        </div>
+        <div class="field"><label>Заголовок (можно &lt;em&gt;курсив&lt;/em&gt; для акцента)</label><input id="s_hero_title"></div>
+        <div class="field"><label>Цитата</label><input id="s_hero_quote"></div>
+        <div class="field">
+          <label>Логотип</label>
+          <div class="upload-row">
+            <img id="logoPreview" class="upload-preview" src="">
+            <input type="file" id="logoFile" accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Цвета оформления</h3>
+        <div class="row3">
+          <div class="field"><label>Фон</label><div class="color-row"><input type="color" id="c_bg"></div></div>
+          <div class="field"><label>Карточки</label><div class="color-row"><input type="color" id="c_surface"></div></div>
+          <div class="field"><label>Акцент (золото)</label><div class="color-row"><input type="color" id="c_gold"></div></div>
+        </div>
+        <div class="row3">
+          <div class="field"><label>Акцент светлый</label><div class="color-row"><input type="color" id="c_gold_bright"></div></div>
+          <div class="field"><label>Текст</label><div class="color-row"><input type="color" id="c_text"></div></div>
+          <div class="field"><label>Текст (приглушённый)</label><div class="color-row"><input type="color" id="c_text_muted"></div></div>
+        </div>
+      </div>
+
+      <button class="btn" id="saveSettingsBtn">Сохранить настройки</button>
+      <span class="ok-msg" id="settingsOk" style="margin-left:12px;"></span>
+    </div>
+
+    <!-- CATEGORIES VIEW -->
+    <div id="view-categories" style="display:none">
+      <h2>Категории</h2>
+      <div class="sub">Разделы меню (Кофе, Чаи, Коктейли и т.д.). Порядок влияет на расположение на сайте.</div>
+      <button class="btn" id="addCategoryBtn" style="margin-bottom:18px;">+ Добавить категорию</button>
+      <div class="panel">
+        <table>
+          <thead><tr><th>#</th><th>Название</th><th>Ярлык (slug)</th><th>Показ</th><th></th></tr></thead>
+          <tbody id="categoriesTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ITEMS VIEW -->
+    <div id="view-items" style="display:none">
+      <h2>Напитки</h2>
+      <div class="sub">Выберите категорию, чтобы редактировать её напитки.</div>
+      <div class="field" style="max-width:340px;">
+        <select id="itemsCategorySelect"></select>
+      </div>
+      <button class="btn" id="addItemBtn" style="margin:16px 0;">+ Добавить напиток</button>
+      <div class="panel">
+        <table>
+          <thead><tr><th>Фото</th><th>Название</th><th>Группа</th><th>Показ</th><th></th></tr></thead>
+          <tbody id="itemsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IMPORT VIEW -->
+    <div id="view-import" style="display:none">
+      <h2>Импорт из файла</h2>
+      <div class="sub">Массовая загрузка напитков из JSON-файла (например, готовый файл, собранный из PDF-гида). Категории должны существовать заранее — сверяются по «ярлыку» (slug); группы создаются автоматически, если их ещё нет.</div>
+      <div class="panel">
+        <div class="field">
+          <label>Файл .json</label>
+          <input type="file" id="importFile" accept="application/json">
+        </div>
+        <div class="field">
+          <label>...или вставьте JSON сюда</label>
+          <textarea id="importJson" rows="8" placeholder='{"items":[{"category_slug":"coffee","name":"Эспрессо", "teaser":"...", "taste":"...", ...}]}'></textarea>
+        </div>
+        <button class="btn" id="runImportBtn">Импортировать</button>
+        <span class="ok-msg" id="importOk" style="margin-left:12px;"></span>
+        <div id="importLog" style="margin-top:16px; font-size:13px; line-height:1.7; max-height:300px; overflow:auto;"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MODALS ============ -->
+<div class="modal-overlay" id="categoryModal">
+  <div class="modal">
+    <h3 id="categoryModalTitle">Категория</h3>
+    <input type="hidden" id="cat_id">
+    <div class="field"><label>Название</label><input id="cat_title"></div>
+    <div class="field"><label>Ярлык (slug, латиницей, без пробелов)</label><input id="cat_slug"></div>
+    <div class="field"><label>Иконка</label>
+      <select id="cat_icon">
+        <option value="coffee">Кофе</option><option value="tea">Чай (авторский)</option>
+        <option value="leaf">Лист / трава</option><option value="lemon">Лимонад</option>
+        <option value="smoothie">Смузи</option><option value="matcha">Матча</option>
+        <option value="fresh">Фреш</option><option value="cocktail">Коктейль</option>
+        <option value="bottle">Крепкий алкоголь</option><option value="soda">Безалкогольные</option>
+        <option value="beer">Пиво</option><option value="wine">Вино</option>
+      </select>
+    </div>
+    <div class="field"><label>Краткое описание раздела (необязательно)</label><textarea id="cat_description"></textarea></div>
+    <div class="field"><label>Совет официанту (необязательно)</label><textarea id="cat_staff_tip"></textarea></div>
+    <div class="field"><label>Порядок (число, меньше — выше)</label><input type="number" id="cat_sort_order" value="0"></div>
+    <div class="field"><label><input type="checkbox" id="cat_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
+    <div class="modal-actions">
+      <button class="btn danger" id="deleteCategoryBtn" style="margin-right:auto;display:none;">Удалить</button>
+      <button class="btn secondary" data-close-modal="categoryModal">Отмена</button>
+      <button class="btn" id="saveCategoryBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="itemModal">
+  <div class="modal">
+    <h3 id="itemModalTitle">Напиток</h3>
+    <input type="hidden" id="it_id">
+    <div class="row2">
+      <div class="field"><label>Название</label><input id="it_name"></div>
+      <div class="field"><label>Название (англ., необязательно)</label><input id="it_name_en"></div>
+    </div>
+    <div class="field">
+      <label>Фото</label>
+      <div class="upload-row">
+        <img id="itemPhotoPreview" class="upload-preview" src="">
+        <input type="file" id="itemPhotoFile" accept="image/*">
+      </div>
+    </div>
+    <div class="field"><label>Короткое описание (в карточке)</label><textarea id="it_teaser"></textarea></div>
+    <div class="field"><label>Состав (каждый пункт с новой строки)</label><textarea id="it_composition"></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Вкус</label><textarea id="it_taste"></textarea></div>
+      <div class="field"><label>Аромат</label><textarea id="it_aroma"></textarea></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Послевкусие</label><textarea id="it_aftertaste"></textarea></div>
+      <div class="field"><label>Кому рекомендовать</label><textarea id="it_who_for"></textarea></div>
+    </div>
+    <div class="field"><label>Как презентовать гостю</label><textarea id="it_presentation"></textarea></div>
+    <div class="row2">
+      <div class="field"><label>Интересный факт (необязательно)</label><textarea id="it_fact"></textarea></div>
+      <div class="field"><label>Сочетание с блюдами (для вин, необязательно)</label><textarea id="it_pairing"></textarea></div>
+    </div>
+    <div class="field">
+      <label>Теги-настроение (через запятую, напр.: Освежающий, Крепкий)</label>
+      <input id="it_mood_tags">
+      <div class="tags-input-hint">Эти теги становятся кликабельными фильтрами на сайте.</div>
+    </div>
+    <div class="row3">
+      <div class="field"><label>Категория</label><select id="it_category_id"></select></div>
+      <div class="field"><label>Группа (необязательно)</label><select id="it_group_id"><option value="">— без группы —</option></select></div>
+      <div class="field"><label>Цена / объём (необязательно)</label><input id="it_price"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Порядок (число)</label><input type="number" id="it_sort_order" value="0"></div>
+      <div class="field"><label><input type="checkbox" id="it_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn danger" id="deleteItemBtn" style="margin-right:auto;display:none;">Удалить</button>
+      <button class="btn secondary" data-close-modal="itemModal">Отмена</button>
+      <button class="btn" id="saveItemBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../assets/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

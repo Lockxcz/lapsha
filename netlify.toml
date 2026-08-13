@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Админ-путь и робот-файлы не индексируются поисковиками
+[[headers]]
+  for = "/panel-7f3k9x/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
