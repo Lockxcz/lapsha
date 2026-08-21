@@ -87,6 +87,39 @@ window.SUPABASE_ANON_KEY = 'eyJhbGciOi...';
 Изменения появляются на публичном сайте сразу после сохранения — обновлять
 код или переразвёртывать сайт не нужно.
 
+## Новости (бегущая строка обновлений)
+
+[#новости-бегущая-строка-обновлений](#новости-бегущая-строка-обновлений)
+
+Над блоком «О гиде» на сайте появилась бегущая строка новостей — короткие
+записи вроде «Изменили состав лимонада», которые вы сами добавляете в
+админ-панели (раздел **Новости**). Строка автоматически едет слева направо,
+а гость может остановить её и полистать вручную — мышью, пальцем на телефоне
+или стрелками. Если новостей нет ни одной — строка на сайте просто не
+показывается.
+
+Если сайт уже был развёрнут раньше (таблица `news` ещё не создана),
+выполните один раз в **Supabase → SQL Editor**:
+
+```sql
+create table if not exists news (
+  id          uuid primary key default gen_random_uuid(),
+  message     text not null,
+  published   boolean not null default true,
+  sort_order  int not null default 0,
+  created_at  timestamptz not null default now()
+);
+create index if not exists news_order_idx on news (sort_order, created_at);
+alter table news enable row level security;
+create policy "public read news" on news for select using (true);
+create policy "admin insert news" on news for insert with check (auth.role() = 'authenticated');
+create policy "admin update news" on news for update using (auth.role() = 'authenticated');
+create policy "admin delete news" on news for delete using (auth.role() = 'authenticated');
+```
+
+Для новых проектов ничего дополнительно делать не нужно — таблица `news`
+уже входит в `supabase/schema.sql`.
+
 ## Что уже учтено по вашему списку правок
 
 - **Единообразие «как презентовать гостю»** — поле есть у каждой позиции в любой

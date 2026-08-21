@@ -90,6 +90,7 @@
     loadSettingsView();
     loadCategoriesView();
     loadItemsView();
+    loadNewsTable();
   }
 
   $('loginForm').addEventListener('submit', async (e)=>{
@@ -114,7 +115,7 @@
     link.addEventListener('click', ()=>{
       document.querySelectorAll('.side-link[data-view]').forEach(l=>l.classList.remove('active'));
       link.classList.add('active');
-      ['settings','categories','items','import'].forEach(v=>{
+      ['settings','categories','items','news','import'].forEach(v=>{
         $('view-'+v).style.display = (v===link.dataset.view) ? '' : 'none';
       });
     });
@@ -382,6 +383,64 @@
     $('itemModal').classList.remove('show');
     toast('Напиток удалён');
     loadItemsTable();
+  });
+
+  // ============================================================
+  // NEWS (бегущая строка обновлений на сайте)
+  // ============================================================
+  async function loadNewsTable(){
+    const { data } = await sb.from('news').select('*').order('sort_order').order('created_at', { ascending:false });
+    const tbody = $('newsTable');
+    tbody.innerHTML = (data||[]).map(n=>`
+      <tr>
+        <td>${n.sort_order}</td>
+        <td>${esc(n.message)}</td>
+        <td><span class="badge ${n.published?'on':'off'}">${n.published?'Виден':'Скрыт'}</span></td>
+        <td class="actions"><button class="btn small secondary" data-edit-news="${n.id}">Изменить</button></td>
+      </tr>`).join('') || `<tr><td colspan="4" style="color:var(--text-muted)">Пока нет новостей.</td></tr>`;
+    tbody.querySelectorAll('[data-edit-news]').forEach(btn=>{
+      btn.addEventListener('click', ()=> openNewsModal((data||[]).find(n=>n.id===btn.dataset.editNews)));
+    });
+  }
+
+  function openNewsModal(item){
+    $('newsModalTitle').textContent = item ? 'Изменить новость' : 'Новая новость';
+    $('news_id').value = item ? item.id : '';
+    $('news_message').value = item ? item.message : '';
+    $('news_sort_order').value = item ? item.sort_order : 0;
+    $('news_published').checked = item ? item.published : true;
+    $('deleteNewsBtn').style.display = item ? 'inline-flex' : 'none';
+    $('newsModal').classList.add('show');
+  }
+
+  $('addNewsBtn').addEventListener('click', ()=> openNewsModal(null));
+
+  $('saveNewsBtn').addEventListener('click', async ()=>{
+    const id = $('news_id').value;
+    const payload = {
+      message: $('news_message').value.trim(),
+      sort_order: parseInt($('news_sort_order').value||'0',10),
+      published: $('news_published').checked,
+    };
+    if(!payload.message){ toast('Напишите текст новости', true); return; }
+    const { error } = id
+      ? await sb.from('news').update(payload).eq('id', id)
+      : await sb.from('news').insert(payload);
+    if(error){ toast('Ошибка: '+error.message, true); return; }
+    $('newsModal').classList.remove('show');
+    toast('Новость сохранена');
+    loadNewsTable();
+  });
+
+  $('deleteNewsBtn').addEventListener('click', async ()=>{
+    const id = $('news_id').value;
+    if(!id) return;
+    if(!confirm('Удалить эту новость?')) return;
+    const { error } = await sb.from('news').delete().eq('id', id);
+    if(error){ toast('Ошибка: '+error.message, true); return; }
+    $('newsModal').classList.remove('show');
+    toast('Новость удалена');
+    loadNewsTable();
   });
 
   // ============================================================

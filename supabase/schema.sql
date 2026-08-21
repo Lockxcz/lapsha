@@ -80,6 +80,16 @@ create table if not exists items (
 -- generated-колонка/индекс в базе для этого не требуются.
 create index if not exists items_category_idx on items (category_id);
 
+-- ---------- NEWS (бегущая строка обновлений над блоком «О гиде») ----------
+create table if not exists news (
+  id          uuid primary key default gen_random_uuid(),
+  message     text not null,                        -- текст новости, напр. "Изменили состав лимонада"
+  published   boolean not null default true,
+  sort_order  int not null default 0,
+  created_at  timestamptz not null default now()
+);
+create index if not exists news_order_idx on news (sort_order, created_at);
+
 -- ============================================================
 -- ROW LEVEL SECURITY
 -- Публичный сайт читает всё (published = true) без авторизации.
@@ -89,12 +99,14 @@ alter table settings enable row level security;
 alter table categories enable row level security;
 alter table item_groups enable row level security;
 alter table items enable row level security;
+alter table news enable row level security;
 
 -- READ (anon + authenticated)
 create policy "public read settings" on settings for select using (true);
 create policy "public read categories" on categories for select using (true);
 create policy "public read groups" on item_groups for select using (true);
 create policy "public read items" on items for select using (true);
+create policy "public read news" on news for select using (true);
 
 -- WRITE (только авторизованные пользователи — админы, создаются вручную в Supabase Auth)
 create policy "admin write settings" on settings for update using (auth.role() = 'authenticated');
@@ -107,6 +119,9 @@ create policy "admin delete groups" on item_groups for delete using (auth.role()
 create policy "admin insert items" on items for insert with check (auth.role() = 'authenticated');
 create policy "admin update items" on items for update using (auth.role() = 'authenticated');
 create policy "admin delete items" on items for delete using (auth.role() = 'authenticated');
+create policy "admin insert news" on news for insert with check (auth.role() = 'authenticated');
+create policy "admin update news" on news for update using (auth.role() = 'authenticated');
+create policy "admin delete news" on news for delete using (auth.role() = 'authenticated');
 
 -- ============================================================
 -- STORAGE (фото напитков, логотип)

@@ -37,6 +37,7 @@
     <div class="side-link active" data-view="settings">Общие настройки</div>
     <div class="side-link" data-view="categories">Категории</div>
     <div class="side-link" data-view="items">Напитки</div>
+    <div class="side-link" data-view="news">Новости</div>
     <div class="side-link" data-view="import">Импорт из файла</div>
     <div class="spacer"></div>
     <a class="side-link" href="../index.html" target="_blank">↗ Открыть сайт</a>
@@ -110,6 +111,19 @@
         <table>
           <thead><tr><th>Фото</th><th>Название</th><th>Группа</th><th>Показ</th><th></th></tr></thead>
           <tbody id="itemsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NEWS VIEW -->
+    <div id="view-news" style="display:none">
+      <h2>Новости</h2>
+      <div class="sub">Короткие строки обновлений (например «Изменили состав лимонада»). Они бегущей строкой показываются на сайте над блоком «О гиде»; посетитель может пролистать их вручную.</div>
+      <button class="btn" id="addNewsBtn" style="margin-bottom:18px;">+ Добавить новость</button>
+      <div class="panel">
+        <table>
+          <thead><tr><th>#</th><th>Текст</th><th>Показ</th><th></th></tr></thead>
+          <tbody id="newsTable"></tbody>
         </table>
       </div>
     </div>
@@ -213,6 +227,21 @@
       <button class="btn danger" id="deleteItemBtn" style="margin-right:auto;display:none;">Удалить</button>
       <button class="btn secondary" data-close-modal="itemModal">Отмена</button>
       <button class="btn" id="saveItemBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="newsModal">
+  <div class="modal">
+    <h3 id="newsModalTitle">Новость</h3>
+    <input type="hidden" id="news_id">
+    <div class="field"><label>Текст новости</label><textarea id="news_message" placeholder="Например: Изменили состав лимонада"></textarea></div>
+    <div class="field"><label>Порядок (число, меньше — раньше в ленте)</label><input type="number" id="news_sort_order" value="0"></div>
+    <div class="field"><label><input type="checkbox" id="news_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
+    <div class="modal-actions">
+      <button class="btn danger" id="deleteNewsBtn" style="margin-right:auto;display:none;">Удалить</button>
+      <button class="btn secondary" data-close-modal="newsModal">Отмена</button>
+      <button class="btn" id="saveNewsBtn">Сохранить</button>
     </div>
   </div>
 </div>

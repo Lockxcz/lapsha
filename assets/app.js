@@ -59,6 +59,104 @@
     }
   }
 
+  // ---------- NEWS TICKER ----------
+  // Бегущая строка обновлений (тексты задаются в админ-панели, таблица `news`).
+  // Автопрокрутка идёт слева направо и её можно "полистать" мышью/пальцем
+  // или стрелками — при взаимодействии автопрокрутка приостанавливается.
+  function newsItemHTML(n){
+    const d = n.created_at ? new Date(n.created_at) : null;
+    const dateStr = d ? d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit' }) : '';
+    return `<span class="news-item">${dateStr?`<span class="date">${dateStr}</span>`:''}<span class="dot"></span>${esc(n.message)}</span>`;
+  }
+
+  async function loadNews(){
+    const ticker = document.getElementById('newsTicker');
+    if(!ticker) return;
+    const { data } = await sb.from('news').select('*').eq('published', true).order('sort_order').order('created_at', { ascending:false });
+    if(!data || !data.length) return;
+
+    const viewport = document.getElementById('newsViewport');
+    const track = document.getElementById('newsTrack');
+    const prevBtn = document.getElementById('newsPrev');
+    const nextBtn = document.getElementById('newsNext');
+
+    // items are duplicated so the strip can loop seamlessly
+    track.innerHTML = data.map(newsItemHTML).join('') + data.map(newsItemHTML).join('');
+    ticker.classList.add('show');
+
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let halfWidth = track.scrollWidth / 2;
+    let paused = reduceMotion;
+    let resumeTimer = null;
+
+    // if content is shorter than the viewport there's nothing to loop/drag
+    if(halfWidth <= viewport.clientWidth){ return; }
+
+    viewport.scrollLeft = halfWidth;
+
+    function pause(){
+      paused = true;
+      clearTimeout(resumeTimer);
+    }
+    function resumeSoon(delay){
+      clearTimeout(resumeTimer);
+      if(reduceMotion) return;
+      resumeTimer = setTimeout(()=>{ paused = false; }, delay || 2500);
+    }
+    function wrap(){
+      if(viewport.scrollLeft <= 0) viewport.scrollLeft += halfWidth;
+      else if(viewport.scrollLeft >= halfWidth * 2) viewport.scrollLeft -= halfWidth;
+    }
+
+    const SPEED = 0.35; // px per frame, moves content left → right
+    function tick(){
+      if(!paused){
+        viewport.scrollLeft -= SPEED;
+        wrap();
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // ---- manual drag (mouse + touch) ----
+    let dragging = false, startX = 0, startScroll = 0;
+    viewport.addEventListener('pointerdown', e=>{
+      dragging = true;
+      pause();
+      viewport.classList.add('dragging');
+      startX = e.clientX;
+      startScroll = viewport.scrollLeft;
+      viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener('pointermove', e=>{
+      if(!dragging) return;
+      viewport.scrollLeft = startScroll - (e.clientX - startX);
+      wrap();
+    });
+    function endDrag(){
+      if(!dragging) return;
+      dragging = false;
+      viewport.classList.remove('dragging');
+      resumeSoon();
+    }
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    viewport.addEventListener('mouseenter', pause);
+    viewport.addEventListener('mouseleave', ()=>{ if(!dragging) resumeSoon(400); });
+
+    // ---- prev / next buttons: step by roughly one viewport width ----
+    function step(dir){
+      pause();
+      viewport.scrollLeft += dir * viewport.clientWidth * 0.8;
+      wrap();
+      resumeSoon();
+    }
+    prevBtn.addEventListener('click', ()=> step(-1));
+    nextBtn.addEventListener('click', ()=> step(1));
+
+    window.addEventListener('resize', ()=>{ halfWidth = track.scrollWidth / 2; });
+  }
+
   function tagChip(t){
     return `<span class="tag" data-tag="${esc(t)}">${esc(t)}</span>`;
   }
@@ -360,5 +458,6 @@
   (async function init(){
     await loadSettings();
     await loadContent();
+    loadNews();
   })();
 })();
