@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LAPSHA Guide — preview update v2</title>
+<style>
+:root{
+  --bg:#15100c;--surface:#241c14;--surface-2:#1d1711;--gold:#c9a24b;--gold-bright:#e9c877;
+  --gold-dim:#8e7136;--text:#f1e8d8;--text-muted:#a89a86;--text-faint:#746a5e;
+  --line:rgba(201,162,75,.16);--line-strong:rgba(201,162,75,.34);
+  --font-head:Georgia,serif;--font-body:Arial,sans-serif;--font-mono:Consolas,monospace;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);padding-bottom:90px}
+.hero{padding:70px 20px;text-align:center;border-bottom:1px solid var(--line);background:radial-gradient(600px 300px at 50% 0%,rgba(201,162,75,.08),transparent)}
+.hero small{font:11px var(--font-mono);letter-spacing:.18em;color:var(--gold)}.hero h1{font:450 clamp(34px,7vw,58px)/1.05 var(--font-head);margin:15px 0}.hero p{color:var(--text-muted)}
+.news-ticker{display:block}.section{max-width:1200px;margin:0 auto}.section-num{font:11px var(--font-mono);letter-spacing:.15em;color:var(--gold-dim)}.section-head h2{font:450 clamp(30px,5vw,42px)/1 var(--font-head);margin:8px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;overflow:hidden}.card-photo-wrap{height:200px;margin:-18px -20px 14px;position:relative;background:linear-gradient(135deg,#3b2d22,#19130f);overflow:hidden}.card-photo-wrap::after{content:'ФОТО НАПИТКА';position:absolute;inset:0;display:grid;place-items:center;color:var(--text-faint);font:10px var(--font-mono);letter-spacing:.16em}.card h3{font:500 21px var(--font-head);margin:0}.eng{font:11px var(--font-mono);color:var(--text-faint);margin-top:4px}.teaser{font-size:13.5px;line-height:1.6;color:var(--text-muted)}.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.tag{font:10px var(--font-mono);padding:4px 8px;border:1px solid var(--line);border-radius:20px;color:var(--gold)}details{border-top:1px dashed var(--line);padding-top:10px}summary{color:var(--gold);font:11px var(--font-mono);cursor:pointer}.detail-row{margin-top:8px;color:var(--text-muted);font-size:13px}.card-top{display:flex;justify-content:space-between;gap:10px}.spirit-group{margin-bottom:40px}.spirit-group h4{font:450 20px var(--font-head);color:var(--gold-bright)}
+.back-to-top{display:none}.intro{max-width:900px;margin:auto;padding:45px 20px;color:var(--text-muted);text-align:center}
+</style>
+<link rel="stylesheet" href="assets/lapsha-update-v2.css">
+</head>
+<body>
+<section class="hero" id="top"><small>ПРЕДПРОСМОТР ОБНОВЛЕНИЯ</small><h1>LAPSHA BAR WOK</h1><p>Новый вид новостей, категорий, поиска и рамок напитков</p></section>
+
+<div class="news-ticker lapsha-news-v2 show" id="newsTicker" data-lapsha-v2="1">
+  <div class="lapsha-news-shell">
+    <div class="lapsha-news-head">
+      <div class="lapsha-news-title-wrap"><span class="lapsha-news-kicker">Обновления меню</span><h2 class="lapsha-news-title">Новости</h2><p class="lapsha-news-subtitle">Листайте влево и вправо — здесь собраны актуальные изменения, новые позиции и важные заметки для команды.</p></div>
+      <div class="lapsha-news-controls"><button class="lapsha-news-btn" onclick="document.querySelector('.lapsha-news-viewport').scrollBy({left:-400,behavior:'smooth'})">←</button><button class="lapsha-news-btn" onclick="document.querySelector('.lapsha-news-viewport').scrollBy({left:400,behavior:'smooth'})">→</button></div>
+    </div>
+    <div class="lapsha-news-viewport"><div class="lapsha-news-track">
+      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 01</span><span class="lapsha-news-date">02 сентября 2026</span></div><p class="lapsha-news-message">В авторских лимонадах обновили подачу и уточнили состав.</p></article>
+      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 02</span><span class="lapsha-news-date">01 сентября 2026</span></div><p class="lapsha-news-message">Добавили новую сезонную кофейную позицию — обратите внимание на рекомендации гостю.</p></article>
+      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 03</span><span class="lapsha-news-date">30 августа 2026</span></div><p class="lapsha-news-message">Для холодных напитков появились отметки ICE / COLD, а алкоголь теперь легко отличить по рамке.</p></article>
+      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 04</span><span class="lapsha-news-date">28 августа 2026</span></div><p class="lapsha-news-message">Обновили описания категорий, чтобы новичкам было проще быстро разобраться в меню.</p></article>
+    </div></div>
+    <div class="lapsha-news-count">4 новости · свайп влево / вправо</div>
+  </div>
+</div>
+
+<div class="intro">Ниже пример категории: описание располагается сразу под названием, а карточки получают рамку только когда выбран специальный тип.</div>
+<main id="sections">
+<section class="section" id="coffee">
+  <div class="section-head"><div><span class="section-num">01 / КАТЕГОРИЯ</span><h2>☕ Кофе</h2></div><p class="section-desc">Классические и авторские кофейные напитки: от насыщенного эспрессо до мягких молочных сочетаний. Подбирайте напиток под вкус гостя, крепость и настроение.</p></div>
+  <div class="spirit-group"><h4>Классика</h4><div class="grid">
+    <div class="card" data-search="эспрессо кофе насыщенный классика" data-tags=""><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Эспрессо</h3><div class="eng">ESPRESSO</div></div><div class="eng">30 мл</div></div><p class="teaser">Плотный, насыщенный кофе с ярким ароматом и коротким послевкусием.</p><details><summary>Подробнее</summary><div class="detail-row">Вкус: насыщенный, орехово-шоколадный.</div></details></div>
+    <div class="card" data-search="айс латте кофе молочный холодный ice cold" data-tags="non alco|ice"><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Айс латте</h3><div class="eng">ICE LATTE</div></div><div class="eng">350 мл</div></div><div class="tags"><span class="tag" data-tag="NON ALCO">NON ALCO</span><span class="tag" data-tag="ICE">ICE</span><span class="tag" data-tag="Мягкий">Мягкий</span></div><p class="teaser">Холодный молочный кофе с мягким вкусом и освежающей подачей.</p><details><summary>Подробнее</summary><div class="detail-row">Кому рекомендовать: тем, кто любит мягкий холодный кофе.</div></details></div>
+    <div class="card" data-search="кофейный коктейль alco алкоголь холодный" data-tags="alco|cold"><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Espresso Martini</h3><div class="eng">COFFEE COCKTAIL</div></div><div class="eng">120 мл</div></div><div class="tags"><span class="tag" data-tag="ALCO">ALCO</span><span class="tag" data-tag="COLD">COLD</span></div><p class="teaser">Холодный кофейный коктейль с выразительной алкогольной основой.</p><details><summary>Подробнее</summary><div class="detail-row">Подача: охлаждённый бокал, кофейный аромат.</div></details></div>
+  </div></div>
+</section>
+</main>
+<script src="assets/lapsha-update-v2.js"></script>
+</body>
+</html>
