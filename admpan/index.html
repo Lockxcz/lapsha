@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,10 @@
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="stylesheet" href="../assets/lapsha-update-v2.css">
 <link rel="stylesheet" href="../assets/guide-v3.css">
+<link rel="stylesheet" href="../assets/guide-v4.css">
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="admin-v3.css">
+<link rel="stylesheet" href="admin-v4.css">
 </head>
 <body>
 
@@ -40,6 +42,7 @@
     <div class="brand">Гид · Админ</div>
     <div class="side-link active" data-view="settings">Общие настройки</div>
     <div class="side-link" data-view="categories">Категории</div>
+    <div class="side-link" data-view="groups">Подкатегории</div>
     <div class="side-link" data-view="items">Напитки</div>
     <div class="side-link" data-view="news">Новости</div>
     <div class="side-link" data-view="import">Импорт из файла</div>
@@ -103,6 +106,8 @@
       </div>
     </div>
 
+    <div id="view-groups" style="display:none"><h2>Подкатегории</h2><p class="sub">Например, «Классический кофе» и «Холодный кофе». На сайте каждую подкатегорию можно свернуть.</p><div class="field"><label for="groupsCategory">Категория</label><select id="groupsCategory"></select></div><button class="btn" id="newGroup">+ Добавить подкатегорию</button><div id="groupsList" class="panel"></div><form id="groupEditor" class="panel" hidden><h3>Редактирование подкатегории</h3><input id="groupId" type="hidden"><div class="field"><label for="groupTitle">Название</label><input id="groupTitle" required></div><div class="field"><label for="groupDescription">Описание</label><textarea id="groupDescription" lang="ru" spellcheck="true"></textarea></div><div class="row2"><div class="field"><label for="groupMode">Отображение описания</label><select id="groupMode"><option value="collapse">Раскрывать по нажатию</option><option value="small">Небольшим текстом</option><option value="hidden">Не показывать</option></select></div><div class="field"><label for="groupOrder">Порядок</label><input id="groupOrder" type="number" value="0"></div></div><button class="btn" type="submit" id="saveGroup">Сохранить</button><button class="btn secondary" type="button" id="cancelGroup">Отмена</button><p id="groupStatus" role="status"></p></form></div>
+
     <!-- ITEMS VIEW -->
     <div id="view-items" style="display:none">
       <h2>Напитки</h2>
@@ -110,7 +115,7 @@
       <div class="field" style="max-width:340px;">
         <select id="itemsCategorySelect"></select>
       </div>
-      <button class="btn" id="addItemBtn" style="margin:16px 0;">+ Добавить напиток</button>
+      <div class="row2"><div class="field"><label for="adminItemSearch">Поиск в выбранной категории</label><input id="adminItemSearch" type="search" placeholder="Название или группа"></div><div class="field"><label for="adminItemStatus">Публикация</label><select id="adminItemStatus"><option value="">Все</option><option value="on">Опубликованные</option><option value="off">Черновики</option></select></div></div><p id="adminItemCount" role="status"></p><button class="btn" id="addItemBtn" style="margin:16px 0;">+ Добавить напиток</button>
       <div class="panel table-panel">
         <table>
           <thead><tr><th>Фото</th><th>Название</th><th>Группа</th><th>Показ</th><th></th></tr></thead>
@@ -172,7 +177,7 @@
       </select>
     </div>
     <div class="field"><label>Краткое описание раздела (необязательно)</label><textarea lang="ru" spellcheck="true" id="cat_description"></textarea></div>
-    <div class="field"><label for="cat_text_align">Выравнивание заголовка и описания</label><select id="cat_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="preview-label">Предпросмотр категории</div><div class="live-preview" id="cat_preview"></div>
+    <div class="field"><label for="cat_description_mode">Описание под названием</label><select id="cat_description_mode"><option value="collapse">Раскрывать по нажатию</option><option value="small">Показывать небольшим текстом</option><option value="hidden">Не показывать</option></select></div><div class="field"><label for="cat_text_align">Выравнивание заголовка и описания</label><select id="cat_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="preview-label">Предпросмотр категории</div><div class="live-preview" id="cat_preview"></div>
 <div class="field"><label>Совет официанту (необязательно)</label><textarea lang="ru" spellcheck="true" id="cat_staff_tip"></textarea></div>
     <div class="field"><label>Порядок (число, меньше — выше)</label><input type="number" id="cat_sort_order" value="0"></div>
     <div class="field"><label><input type="checkbox" id="cat_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
@@ -259,5 +264,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="../assets/guide-ui.js"></script>
 <script src="admin.js"></script>
+<script src="admin-v4.js"></script>
 </body>
 </html>

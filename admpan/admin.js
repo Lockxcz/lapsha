@@ -115,7 +115,7 @@
     link.addEventListener('click', ()=>{
       document.querySelectorAll('.side-link[data-view]').forEach(l=>l.classList.remove('active'));
       link.classList.add('active');
-      ['settings','categories','items','news','import'].forEach(v=>{
+      ['settings','categories','groups','items','news','import'].forEach(v=>{
         $('view-'+v).style.display = (v===link.dataset.view) ? '' : 'none';
       });
     });
@@ -196,6 +196,8 @@
       btn.addEventListener('click', ()=> openCategoryModal(btn.dataset.editCat, data));
     });
     populateCategorySelects(data||[]);
+    window.GuideAdmin.categories=data||[];
+    document.dispatchEvent(new CustomEvent('admin:categories',{detail:data||[]}));
   }
 
   function esc(s){ return (s==null?'':String(s)).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -207,6 +209,7 @@
     $('cat_title').value = cat ? cat.title : '';
     $('cat_slug').value = cat ? cat.slug : '';
     $('cat_icon').value = cat ? cat.icon : 'coffee';
+    $('cat_description_mode').value=cat?.description_mode||'collapse';
     $('cat_text_align').value=cat?.text_align||'left';
     $('cat_description').value = cat ? cat.description||'' : '';
     $('cat_staff_tip').value = cat ? cat.staff_tip||'' : '';
@@ -225,6 +228,7 @@
       title: $('cat_title').value.trim(),
       slug: $('cat_slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-'),
       icon: $('cat_icon').value,
+      description_mode: $('cat_description_mode').value,
       text_align: $('cat_text_align').value,
       description: $('cat_description').value.trim(),
       staff_tip: $('cat_staff_tip').value.trim(),
@@ -235,7 +239,7 @@
     const { error } = id
       ? await sb.from('categories').update(payload).eq('id', id)
       : await sb.from('categories').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория сохранена');
     loadCategoriesView();
@@ -246,7 +250,7 @@
     if(!id) return;
     if(!confirm('Удалить категорию и все её напитки? Это действие нельзя отменить.')) return;
     const { error } = await sb.from('categories').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория удалена');
     loadCategoriesView();
@@ -378,7 +382,7 @@
     const { error } = id
       ? await sb.from('items').update(payload).eq('id', id)
       : await sb.from('items').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток сохранён');
     loadItemsTable();
@@ -389,7 +393,7 @@
     if(!id) return;
     if(!confirm('Удалить этот напиток?')) return;
     const { error } = await sb.from('items').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток удалён');
     loadItemsTable();
@@ -443,7 +447,7 @@
     const { error } = id
       ? await sb.from('news').update(payload).eq('id', id)
       : await sb.from('news').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость сохранена');
     loadNewsTable();
@@ -454,7 +458,7 @@
     if(!id) return;
     if(!confirm('Удалить эту новость?')) return;
     const { error } = await sb.from('news').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость удалена');
     loadNewsTable();
@@ -572,7 +576,7 @@
     item.mood_tags=$('it_mood_tags').value.split(',').map(s=>s.trim()).filter(Boolean);
     item.image_url=$('itemPhotoPreview').getAttribute('src')||'';
     $('it_preview').innerHTML=ui.cardHTML(item);
-    $('cat_preview').innerHTML=ui.sectionHead({_num:1,title:$('cat_title').value,description:$('cat_description').value,text_align:$('cat_text_align').value});
+    $('cat_preview').innerHTML=ui.sectionHead({_num:1,title:$('cat_title').value,description:$('cat_description').value,text_align:$('cat_text_align').value,description_mode:$('cat_description_mode').value});
     $('news_preview').innerHTML=ui.newsHTML({title:$('news_title').value,message:$('news_message').value,text_align:$('news_text_align').value,pinned:$('news_pinned').checked});
   }
   ['categoryModal','itemModal','newsModal'].forEach(id=>{ $(id).addEventListener('input',renderPreviews);$(id).addEventListener('change',renderPreviews); });
@@ -580,5 +584,6 @@
   $('duplicateItemBtn').onclick=()=>{ $('it_id').value='';$('it_name').value=($('it_name').value||'Напиток')+' — копия';$('it_published').checked=false;$('deleteItemBtn').style.display='none';$('itemModalTitle').textContent='Копия · новый черновик';renderPreviews();toast('Копия подготовлена. Нажмите «Сохранить», чтобы добавить её.'); };
   document.querySelectorAll('.field').forEach(field=>{const label=field.querySelector('label'),input=field.querySelector('input,textarea,select');if(label&&input?.id)label.htmlFor=input.id;});
 
+  window.GuideAdmin={sb,toast,publicUrl,loadItemsTable,populateGroupSelect};
   checkSession();
 })();

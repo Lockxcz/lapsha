@@ -58,6 +58,11 @@ function classify(item){
     </div>`;
   }
 
+  function descriptionHTML(text,mode='collapse',label='О категории'){
+ if(!text||mode==='hidden')return '';
+ const paragraph=`<p class="section-desc">${esc(text)}</p>`;
+ return mode==='small'?paragraph:`<details class="category-about"><summary>${esc(label)}</summary>${paragraph}</details>`;
+}
   function sectionHead(cat){
     const icon = window.ICONS && window.ICONS[cat.icon] ? `<span class="icon" style="width:26px;height:26px;color:var(--gold)">${window.ICONS[cat.icon]}</span>` : '';
     return `<div class="section-head" data-align="${align(cat.text_align)}">
@@ -65,7 +70,7 @@ function classify(item){
         <span class="section-num">${String(cat._num).padStart(2,'0')} / КАТЕГОРИЯ</span>
         <h2>${icon}${esc(cat.title)}</h2>
       </div>
-      ${cat.description?`<p class="section-desc">${esc(cat.description)}</p>`:''}
+      ${descriptionHTML(cat.description,cat.description_mode)}
     </div>`;
   }
 
@@ -73,7 +78,7 @@ function classify(item){
 function newsHTML(n,index=0){
  const date=n.created_at?new Date(n.created_at):null;
  const stamp=date&&!isNaN(date)?date.toLocaleDateString('ru-RU',{day:'numeric',month:'long'}):'';
- return `<article class="lapsha-news-card ${n.pinned?'is-pinned':''}" data-align="${align(n.text_align)}"><div class="lapsha-news-meta"><span class="lapsha-news-index">${n.pinned?'Важное':'Новость '+String(index+1).padStart(2,'0')}</span><time class="lapsha-news-date">${esc(stamp)}</time></div>${n.title?`<h3 class="news-heading">${esc(n.title)}</h3>`:''}<p class="lapsha-news-message">${esc(n.message)}</p></article>`;
+ return `<article data-news-id="${esc(n.id||'preview')}" class="lapsha-news-card ${n.pinned?'is-pinned':''}" data-align="${align(n.text_align)}"><div class="lapsha-news-meta"><span class="lapsha-news-index">${n.pinned?'Важное':'Новость '+String(index+1).padStart(2,'0')}</span><time class="lapsha-news-date">${esc(stamp)}</time></div>${n.title?`<h3 class="news-heading">${esc(n.title)}</h3>`:''}<p class="lapsha-news-message">${esc(n.message)}</p></article>`;
 }
 function renderNews(ticker,news){
  ticker.innerHTML=''; ticker.className='news-ticker lapsha-news-v2';
@@ -91,12 +96,14 @@ function renderNews(ticker,news){
  viewport.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();step(e.key==='ArrowLeft'?-1:1);}};
  viewport.addEventListener('scroll',update,{passive:true});
  let dragging=false,x=0,left=0;
- viewport.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;dragging=true;x=e.clientX;left=viewport.scrollLeft;viewport.setPointerCapture(e.pointerId);viewport.classList.add('dragging');});
+ viewport.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('button,a,input,summary'))return;dragging=true;x=e.clientX;left=viewport.scrollLeft;viewport.setPointerCapture(e.pointerId);viewport.classList.add('dragging');});
  viewport.addEventListener('pointermove',e=>{if(dragging)viewport.scrollLeft=left-(e.clientX-x);});
  const end=()=>{dragging=false;viewport.classList.remove('dragging');update();};
  viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
  if(window.ResizeObserver){const observer=new ResizeObserver(update);observer.observe(viewport);}
  requestAnimationFrame(update);
+ window.GuideNews=data;
+ document.dispatchEvent(new CustomEvent('guide:news',{detail:data}));
 }
-window.GuideUI={esc,normalize,align,classify,cardHTML,sectionHead,newsHTML,renderNews};
+window.GuideUI={descriptionHTML,esc,normalize,align,classify,cardHTML,sectionHead,newsHTML,renderNews};
 })();

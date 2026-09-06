@@ -13,6 +13,7 @@
   const clearFilterBtn = document.getElementById('clearFilter');
 
   let activeTag = null;
+  let extraIds=null;
   let favoritesOnly=false;
   let favorites=new Set();
   try{const saved=JSON.parse(localStorage.getItem('lapsha-favorites-v3')||'[]');if(Array.isArray(saved))favorites=new Set(saved);}catch{}
@@ -83,6 +84,7 @@
     ]);
     const failure=responses.find(r=>r.error); if(failure) throw failure.error;
     const [cats,groups,items]=responses.map(r=>r.data||[]);
+    window.GuideData={categories:cats,groups,items,publicUrl};
 
     const groupsByCat = {};
     (groups||[]).forEach(g=>{ (groupsByCat[g.category_id] ||= []).push(g); });
@@ -109,7 +111,7 @@
         catGroups.forEach(g=>{
           const gi = catItems.filter(it=>it.group_id===g.id);
           if(!gi.length) return;
-          body += `<div class="spirit-group"><h4>${esc(g.title)}</h4>${g.description?`<p class="group-desc">${esc(g.description)}</p>`:''}<div class="grid">${gi.map(cardHTML).join('')}</div></div>`;
+          body += `<details class="spirit-group" open><summary class="group-heading">${esc(g.title)} <span>${gi.length}</span></summary>${window.GuideUI.descriptionHTML(g.description,g.description_mode,'О подкатегории')}<div class="grid">${gi.map(cardHTML).join('')}</div></details>`;
         });
         const ungrouped = catItems.filter(it=>!catGroups.some(g=>g.id===it.group_id));
         if(ungrouped.length) body += `<div class="grid">${ungrouped.map(cardHTML).join('')}</div>`;
@@ -126,6 +128,7 @@
     });
 
     initInteractions();
+    window.GuideReady=true;
     document.dispatchEvent(new Event('guide:ready'));
   }
 
@@ -135,8 +138,8 @@
       const btn = e.target.closest('.chip');
       if(!btn) return;
       const target = btn.dataset.target;
-      if(target === 'top'){ document.getElementById('top').scrollIntoView({behavior:'smooth'}); }
-      else { document.getElementById(target).scrollIntoView({behavior:'smooth'}); }
+      if(target === 'top'){ document.dispatchEvent(new Event('guide:reset'));document.getElementById('top').scrollIntoView({behavior:'smooth'}); }
+      else { document.dispatchEvent(new Event('guide:reset'));document.getElementById(target).scrollIntoView({behavior:'smooth'}); }
     });
 
     // ---- scroll-spy ----
@@ -298,21 +301,22 @@
       let sectionHasMatch = false;
       const cards = sec.querySelectorAll('.card[data-search]');
       cards.forEach(card=>{
-        const hay = normalize((card.dataset.search || '')+' '+sec.querySelector('.section-head').textContent+' '+(card.closest('.spirit-group')?.querySelector('h4')?.textContent||''));
+        const hay = normalize((card.dataset.search || '')+' '+sec.querySelector('.section-head').textContent+' '+(card.closest('.spirit-group')?.querySelector('.group-heading')?.textContent||''));
         const tags = (card.dataset.tags || '').split('|');
         const matchesQuery = !q || q.split(' ').every(word=>hay.includes(word));
         const matchesTag = !activeTag || tags.includes(activeTag.toLowerCase());
-        const match = matchesQuery && matchesTag && (!favoritesOnly||favorites.has(card.dataset.id));
+        const match = matchesQuery && matchesTag && (!favoritesOnly||favorites.has(card.dataset.id)) && (!extraIds||extraIds.has(card.dataset.id));
         card.style.display = match ? '' : 'none';
         if(match) sectionHasMatch = true;
       });
       sec.querySelectorAll('.spirit-group').forEach(group=>{group.style.display=[...group.querySelectorAll('.card')].some(c=>c.style.display!=='none')?'':'none';});
       // sections without cards (spirit lists use plain text, always considered visible unless filtering)
-      if(!q && !activeTag && !favoritesOnly){ sec.style.display=''; sectionHasMatch = true; }
+      if(!q && !activeTag && !favoritesOnly && !extraIds){ sec.style.display=''; sectionHasMatch = true; }
       else sec.style.display = sectionHasMatch ? '' : 'none';
       if(sectionHasMatch) anyVisible = true;
     });
-    noResults.style.display = ((q||activeTag||favoritesOnly) && !anyVisible) ? 'block' : 'none';
+    document.dispatchEvent(new CustomEvent('guide:filtered',{detail:{visible:[...mainEl.querySelectorAll('.card')].filter(c=>c.style.display!=='none').length}}));
+    noResults.style.display = ((q||activeTag||favoritesOnly||extraIds) && !anyVisible) ? 'block' : 'none';
   }
 
   document.querySelectorAll('.tag').forEach(t=>{
@@ -322,7 +326,8 @@
     });
   });
 
-  document.addEventListener('guide:reset',()=>{activeTag=null;favoritesOnly=false;searchInput.value='';applyFilters();document.getElementById('favoritesOnly')?.setAttribute('aria-pressed','false');});
+  document.addEventListener('guide:reset',()=>{activeTag=null;favoritesOnly=false;extraIds=null;searchInput.value='';applyFilters();document.getElementById('favoritesOnly')?.setAttribute('aria-pressed','false');});
+  document.addEventListener('guide:extra-filter',e=>{extraIds=e.detail?new Set(e.detail):null;applyFilters();});
   document.addEventListener('guide:favorites',e=>{favorites=new Set(e.detail.ids);favoritesOnly=e.detail.only;applyFilters();});
   (async function init(){
     mainEl.textContent='Загружаем меню…';

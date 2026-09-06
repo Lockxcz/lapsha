@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="assets/style.css">
 <link rel="stylesheet" href="assets/lapsha-update-v2.css">
 <link rel="stylesheet" href="assets/guide-v3.css">
+<link rel="stylesheet" href="assets/guide-v4.css">
 </head>
 <body>
 
@@ -53,7 +54,7 @@
   </div>
 </div>
 
-<div class="intro">
+<details class="intro"><summary>О гиде и разделах меню</summary>
   <div class="intro-grid">
     <div class="intro-label">О гиде</div>
     <div class="intro-body">
@@ -62,10 +63,10 @@
       <div class="toc" id="toc"></div>
     </div>
   </div>
-</div>
+</details>
 
 <main id="sections"></main>
-<div id="noResults">Ничего не найдено</div>
+<div id="noResults">Нет напитков с такими условиями. <button type="button" onclick="document.dispatchEvent(new Event('guide:reset'))">Сбросить фильтры</button></div>
 
 <footer>LAPSHA BAR WOK · Гид по барному меню · Только для сотрудников</footer>
 
@@ -96,5 +97,6 @@
 <script src="assets/guide-ui.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/guide-extras.js"></script>
+<script src="assets/guide-v4.js"></script>
 </body>
 </html>

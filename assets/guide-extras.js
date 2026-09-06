@@ -51,7 +51,7 @@
         }
         sec.querySelectorAll('.card[data-search]').forEach(card=>{
           const name = card.querySelector('h3')?.textContent?.trim() || 'Напиток';
-          const group = card.closest('.spirit-group')?.querySelector('h4')?.textContent?.trim() || '';
+          const group = card.closest('.spirit-group')?.querySelector('.group-heading')?.textContent?.trim() || '';
           const price = card.querySelector('.card-top > .eng')?.textContent?.trim() || '';
           out.push({
             type:'drink',
@@ -113,10 +113,11 @@
       const target = item.target;
       if(!target || !target.isConnected) return;
       target.classList.add('in-view');
-      const group=target.closest('.spirit-group'); if(group)group.classList.add('in-view');
+      const group=target.closest('.spirit-group'); if(group){group.classList.add('in-view');group.open=true;}
+      document.dispatchEvent(new CustomEvent('guide:opened',{detail:target.dataset.id}));
       target.scrollIntoView({behavior:'smooth',block:'center'});
       if(item.type === 'drink'){
-        const details = target.querySelector('details');
+        const details = target.querySelector(':scope > details');
         if(details) details.open = true;
         target.classList.remove('quick-find-hit');
         void target.offsetWidth;
@@ -162,7 +163,8 @@
   }
 
 createQuickFind();
- document.addEventListener('guide:ready',()=>{
+ function initFavorites(){
+  if(document.getElementById('favoritesOnly'))return;
   const cards=[...document.querySelectorAll('#sections .card')];
   let saved=new Set();try{const data=JSON.parse(localStorage.getItem('lapsha-favorites-v3')||'[]');if(Array.isArray(data))saved=new Set(data);}catch{}
   let only=false;
@@ -172,9 +174,11 @@ createQuickFind();
   const notify=()=>{document.dispatchEvent(new CustomEvent('guide:favorites',{detail:{ids:[...saved],only}}));bar.querySelector('#favoriteCount').textContent=`В избранном: ${cards.filter(c=>saved.has(c.dataset.id)).length}`;};
   cards.forEach(card=>{const button=document.createElement('button');button.type='button';button.className='favorite-toggle';const paint=()=>{const on=saved.has(card.dataset.id);button.textContent=on?'★ В избранном':'☆ В избранное';button.setAttribute('aria-pressed',String(on));};paint();button.onclick=()=>{saved.has(card.dataset.id)?saved.delete(card.dataset.id):saved.add(card.dataset.id);paint();try{localStorage.setItem('lapsha-favorites-v3',JSON.stringify([...saved]));}catch{}notify();};card.append(button);});
   bar.querySelector('#favoritesOnly').onclick=e=>{only=!only;e.currentTarget.setAttribute('aria-pressed',String(only));notify();};
-  bar.querySelector('#expandAll').onclick=()=>cards.filter(c=>c.style.display!=='none').forEach(c=>{const d=c.querySelector('details');if(d)d.open=true;});
-  bar.querySelector('#collapseAll').onclick=()=>cards.forEach(c=>{const d=c.querySelector('details');if(d)d.open=false;});
+  bar.querySelector('#expandAll').onclick=()=>cards.filter(c=>c.style.display!=='none').forEach(c=>{const d=c.querySelector(':scope > details');if(d)d.open=true;});
+  bar.querySelector('#collapseAll').onclick=()=>cards.forEach(c=>{const d=c.querySelector(':scope > details');if(d)d.open=false;});
   document.addEventListener('guide:reset',()=>{only=false;bar.querySelector('#favoritesOnly').setAttribute('aria-pressed','false');});
   notify();
- });
+ }
+ document.addEventListener('guide:ready',initFavorites);
+ if(window.GuideReady)initFavorites();
 })();
