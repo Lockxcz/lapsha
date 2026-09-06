@@ -1,0 +1,19 @@
+{
+  "name": "lapsha-guide",
+  "version": "5.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "cheerio": "1.1.2"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.14"
+  }
+}

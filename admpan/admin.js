@@ -239,7 +239,7 @@
     const { error } = id
       ? await sb.from('categories').update(payload).eq('id', id)
       : await sb.from('categories').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория сохранена');
     loadCategoriesView();
@@ -250,7 +250,7 @@
     if(!id) return;
     if(!confirm('Удалить категорию и все её напитки? Это действие нельзя отменить.')) return;
     const { error } = await sb.from('categories').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория удалена');
     loadCategoriesView();
@@ -283,13 +283,22 @@
     // categories already populated via loadCategoriesView -> populateCategorySelects
   }
 
+  let itemLoadVersion=0;
   async function loadItemsTable(){
+    const request=++itemLoadVersion;
     const categoryId = $('itemsCategorySelect').value;
     if(!categoryId){ $('itemsTable').innerHTML=''; return; }
-    const [{data:items}, {data:groups}] = await Promise.all([
+    $('itemsTable').innerHTML='<tr><td colspan="6">Загружаем напитки…</td></tr>';
+    document.dispatchEvent(new Event('admin:items-loading'));
+    const responses = await Promise.all([
       sb.from('items').select('*').eq('category_id', categoryId).order('sort_order'),
       sb.from('item_groups').select('*').eq('category_id', categoryId),
     ]);
+    if(request!==itemLoadVersion)return;
+    const failure=responses.find(r=>r.error);
+    if(failure){toast('Не удалось загрузить напитки: '+failure.error.message,true);return;}
+    const [items,groups]=responses.map(r=>r.data||[]);
+    window.GuideAdmin.items=items;
     const groupTitle = (gid)=> (groups||[]).find(g=>g.id===gid)?.title || '—';
     const tbody = $('itemsTable');
     tbody.innerHTML = (items||[]).map(it=>`
@@ -303,6 +312,7 @@
     tbody.querySelectorAll('[data-edit-item]').forEach(btn=>{
       btn.addEventListener('click', ()=> openItemModal((items||[]).find(i=>i.id===btn.dataset.editItem)));
     });
+    document.dispatchEvent(new CustomEvent('admin:items',{detail:items||[]}));
   }
 
   function openItemModal(item){
@@ -382,7 +392,7 @@
     const { error } = id
       ? await sb.from('items').update(payload).eq('id', id)
       : await sb.from('items').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток сохранён');
     loadItemsTable();
@@ -393,7 +403,7 @@
     if(!id) return;
     if(!confirm('Удалить этот напиток?')) return;
     const { error } = await sb.from('items').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток удалён');
     loadItemsTable();
@@ -447,7 +457,7 @@
     const { error } = id
       ? await sb.from('news').update(payload).eq('id', id)
       : await sb.from('news').insert(payload);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость сохранена');
     loadNewsTable();
@@ -458,7 +468,7 @@
     if(!id) return;
     if(!confirm('Удалить эту новость?')) return;
     const { error } = await sb.from('news').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.sql в Supabase.', true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v4.1.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость удалена');
     loadNewsTable();

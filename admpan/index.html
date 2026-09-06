@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html lang="ru" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="admin.css">
 <link rel="stylesheet" href="admin-v3.css">
 <link rel="stylesheet" href="admin-v4.css">
+<link rel="stylesheet" href="admin-bulk.css">
 </head>
 <body>
 
@@ -204,7 +205,7 @@
         <input type="file" id="itemPhotoFile" accept="image/*">
       </div>
     </div>
-    <div class="field"><label for="it_frame_mode">Рамка вокруг фото и текста</label><select id="it_frame_mode"><option value="auto">По тегам</option><option value="none">Без цветной рамки и меток</option><option value="alco">ALCO — красная</option><option value="nonalco">NON ALCO — синяя</option></select></div><div class="field"><label for="it_serving_style">Подача</label><select id="it_serving_style"><option value="auto">По тегам</option><option value="none">Не указывать</option><option value="ice">ICE — со льдом</option><option value="cold">COLD — холодный</option></select></div><div class="field"><label for="it_text_align">Выравнивание текста</label><select id="it_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="field"><label>Короткое описание (в карточке)</label><textarea lang="ru" spellcheck="true" id="it_teaser"></textarea></div>
+    <div class="field"><label for="it_frame_mode">Рамка вокруг фото и текста</label><select id="it_frame_mode"><option value="auto">По тегам</option><option value="none">Без цветной рамки и меток</option><option value="alco">ALCO — красная</option><option value="nonalco">NON ALCO — синяя</option></select></div><div class="field"><label for="it_serving_style">Подача</label><select id="it_serving_style"><option value="auto">По тегам</option><option value="none">Не указывать</option><option value="ice">ICE — со льдом</option><option value="cold">COLD — холодный</option><option value="hot">HOT — горячий</option></select></div><div class="field"><label for="it_text_align">Выравнивание текста</label><select id="it_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="field"><label>Короткое описание (в карточке)</label><textarea lang="ru" spellcheck="true" id="it_teaser"></textarea></div>
     <div class="field"><label>Состав (каждый пункт с новой строки)</label><textarea lang="ru" spellcheck="true" id="it_composition"></textarea></div>
     <div class="row2">
       <div class="field"><label>Вкус</label><textarea lang="ru" spellcheck="true" id="it_taste"></textarea></div>
@@ -265,5 +266,7 @@
 <script src="../assets/guide-ui.js"></script>
 <script src="admin.js"></script>
 <script src="admin-v4.js"></script>
+<script src="admin-bulk.js"></script>
+<script src="admin-auto-photos.js"></script>
 </body>
 </html>

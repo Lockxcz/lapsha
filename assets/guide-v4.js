@@ -4,11 +4,13 @@
 const {esc,normalize}=window.GuideUI;
 const read=(key,fallback)=>{try{const v=JSON.parse(localStorage.getItem(key));return v??fallback;}catch{return fallback;}};
 const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{}};
-const savedPrefs=read('lapsha-view-v4',{});
-const prefs={theme:'light',layout:'grid',density:'comfortable',size:'normal',...savedPrefs};
+const legacyPrefs=read('lapsha-view-v4',{});
+const savedPrefs=read('lapsha-view-v41',{...legacyPrefs,theme:'dark'});
+const prefs={theme:'dark',layout:'grid',density:'comfortable',size:'normal',...savedPrefs};
+if(!['dark','light'].includes(prefs.theme))prefs.theme='dark';
 function paintPrefs(){
  for(const key of ['theme','layout','density','size'])document.documentElement.dataset[key]=prefs[key];
- write('lapsha-view-v4',prefs);
+ write('lapsha-view-v41',prefs);
 }
 paintPrefs();
 const modal=document.createElement('dialog');modal.className='guide-dialog';modal.setAttribute('aria-label','Инструменты меню');
@@ -49,15 +51,15 @@ function initCatalogue(){
  const toolbar=document.createElement('section');toolbar.className='catalog-controls';toolbar.setAttribute('aria-label','Настройки меню');
  const opts=(arr)=>arr.map(([v,t])=>`<option value="${v}">${t}</option>`).join('');
  toolbar.innerHTML=`<div class="catalog-title"><div><span class="eyebrow">Барная карта</span><h2>Найти свой вкус<span class="result-count" id="resultCount"></span></h2></div><div class="catalog-actions"><button type="button" id="studyStart">Изучать меню</button><button type="button" id="compareOpen">Сравнить · 0</button><button type="button" id="randomDrink" class="subtle-button">Случайный напиток</button></div></div>
- <div class="filter-row"><label>Категория<select id="categoryFilter"><option value="">Все категории</option>${data.categories.map(c=>`<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('')}</select></label><label>Тип<select id="typeFilter">${opts([['','Любой'],['alco','ALCO'],['nonalco','NON ALCO']])}</select></label><label>Подача<select id="servingFilter">${opts([['','Любая'],['ice','ICE · со льдом'],['cold','COLD · холодный']])}</select></label><label>Порядок<select id="sortOrder">${opts([['default','Как в меню'],['az','Название А—Я'],['za','Название Я—А']])}</select></label><button type="button" id="resetAll" class="subtle-button">Сбросить</button></div>
- <details class="view-options"><summary>Вид и обучение <span id="studyProgress"></span></summary><div class="filter-row"><label>Тема<select id="themeChoice">${opts([['light','Светлая'],['dark','Тёмная'],['brand','Цвета заведения']])}</select></label><label>Карточки<select id="layoutChoice">${opts([['grid','Сетка'],['list','Список']])}</select></label><label>Плотность<select id="densityChoice">${opts([['comfortable','Свободная'],['compact','Компактная']])}</select></label><label>Текст<select id="sizeChoice">${opts([['normal','Обычный'],['large','Увеличенный']])}</select></label><label>Знание меню<select id="learnedFilter">${opts([['','Все напитки'],['new','Ещё не изучены'],['learned','Уже изучены']])}</select></label></div><div class="catalog-actions"><button type="button" id="recentOpen">Недавно открытые</button><button type="button" id="resumeLast">Продолжить изучение</button><button type="button" id="printMenu">Печать текущего меню</button><button type="button" id="clearLearned">Сбросить изученное</button></div></details>`;
+ <div class="filter-row"><label>Категория<select id="categoryFilter"><option value="">Все категории</option>${data.categories.map(c=>`<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('')}</select></label><label>Тип<select id="typeFilter">${opts([['','Любой'],['alco','ALCO'],['nonalco','NON ALCO']])}</select></label><label>Подача<select id="servingFilter">${opts([['','Любая'],['ice','ICE · со льдом'],['cold','COLD · холодный'],['hot','HOT · горячий']])}</select></label><label>Порядок<select id="sortOrder">${opts([['default','Как в меню'],['az','Название А—Я'],['za','Название Я—А']])}</select></label><button type="button" id="resetAll" class="subtle-button">Сбросить</button></div>
+ <details class="view-options"><summary>Вид и обучение <span id="studyProgress"></span></summary><div class="filter-row"><label>Тема<select id="themeChoice">${opts([['light','Светлая'],['dark','Тёмная']])}</select></label><label>Карточки<select id="layoutChoice">${opts([['grid','Сетка'],['list','Список']])}</select></label><label>Плотность<select id="densityChoice">${opts([['comfortable','Свободная'],['compact','Компактная']])}</select></label><label>Текст<select id="sizeChoice">${opts([['normal','Обычный'],['large','Увеличенный']])}</select></label><label>Знание меню<select id="learnedFilter">${opts([['','Все напитки'],['new','Ещё не изучены'],['learned','Уже изучены']])}</select></label></div><div class="catalog-actions"><button type="button" id="recentOpen">Недавно открытые</button><button type="button" id="resumeLast">Продолжить изучение</button><button type="button" id="printMenu">Печать текущего меню</button><button type="button" id="clearLearned">Сбросить изученное</button></div></details>`;
  document.getElementById('sections').before(toolbar);
  const $=id=>toolbar.querySelector('#'+id);
  for(const key of ['theme','layout','density','size']){const control=$(key+'Choice');control.value=prefs[key];control.onchange=()=>{prefs[key]=control.value;paintPrefs();};}
  const types=i=>{
   const tags=(i.mood_tags||[]).map(normalize);const visual=window.GuideUI.classify({...i,frame_mode:i.frame_mode==='none'?'auto':i.frame_mode});
   const type=visual.classes.includes('drink-nonalco')?'nonalco':visual.classes.includes('drink-alco')?'alco':'';
-  let serving=i.serving_style||'auto';if(serving==='auto')serving=tags.some(t=>['ice','со льдом'].includes(t))?'ice':tags.some(t=>['cold','холодный','холодное','лед'].includes(t))?'cold':'';
+  const serving=window.GuideUI.serving(i);
   return {type,serving};
  };
  function filter(){

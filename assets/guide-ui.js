@@ -4,19 +4,26 @@
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const normalize = s => String(s??'').toLowerCase().replace(/ё/g,'е').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();
 const align = v => ['left','center','right'].includes(v)?v:'left';
+function serving(item){
+ const explicit=item.serving_style||'auto';
+ if(explicit!=='auto')return ['ice','cold','hot'].includes(explicit)?explicit:'';
+ const tags=(item.mood_tags||[]).map(normalize);
+ if(tags.some(t=>['hot','горячий','горячее','горячая'].includes(t)))return 'hot';
+ if(tags.some(t=>['ice','со льдом'].includes(t)))return 'ice';
+ return tags.some(t=>['cold','холодный','холодное','лед'].includes(t))?'cold':'';
+}
 function classify(item){
  const tags=(item.mood_tags||[]).map(normalize);
  const non=tags.some(t=>['non alco','non alcohol','без алкоголя','безалкогольный','безалкогольное','0%'].includes(t));
  const alco=tags.some(t=>['alco','alcohol','алко','алкоголь','алкогольный','алкогольное'].includes(t));
  let frame=item.frame_mode||'auto';
  if(frame==='auto') frame=non?'nonalco':alco?'alco':'';
- let cold=item.serving_style||'auto';
- if(cold==='auto') cold=tags.includes('ice')||tags.includes('со льдом')?'ice':tags.some(t=>['cold','холодный','холодное','лед'].includes(t))?'cold':'';
+ const cold=serving(item);
  if(frame==='none') return {classes:'',flags:''};
  const flags=[];
  if(['alco','nonalco'].includes(frame)) flags.push(`<span class="drink-flag ${frame}">${frame==='alco'?'ALCO':'NON ALCO'}</span>`);
- if(['ice','cold'].includes(cold)) flags.push(`<span class="drink-flag cold">${cold.toUpperCase()}</span>`);
- return {classes:[['alco','nonalco'].includes(frame)?'drink-'+frame:'', ['ice','cold'].includes(cold)?'drink-cold':''].join(' '),flags:flags.length?`<div class="drink-flags">${flags.join('')}</div>`:''};
+ if(cold) flags.push(`<span class="drink-flag ${cold==='hot'?'hot':'cold'}">${cold.toUpperCase()}</span>`);
+ return {classes:[['alco','nonalco'].includes(frame)?'drink-'+frame:'', cold?(cold==='hot'?'drink-hot':'drink-cold'):''].join(' '),flags:flags.length?`<div class="drink-flags">${flags.join('')}</div>`:''};
 }
   function tagChip(t){
     return `<button type="button" class="tag" data-tag="${esc(t)}">${esc(t)}</button>`;
@@ -105,5 +112,5 @@ function renderNews(ticker,news){
  window.GuideNews=data;
  document.dispatchEvent(new CustomEvent('guide:news',{detail:data}));
 }
-window.GuideUI={descriptionHTML,esc,normalize,align,classify,cardHTML,sectionHead,newsHTML,renderNews};
+window.GuideUI={serving,descriptionHTML,esc,normalize,align,classify,cardHTML,sectionHead,newsHTML,renderNews};
 })();

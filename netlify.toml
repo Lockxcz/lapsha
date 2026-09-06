@@ -1,5 +1,14 @@
 [build]
-  publish = "."
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["cheerio"]
 
 [[headers]]
   for = "/*"
@@ -10,6 +19,6 @@
 
 # Админ-путь и робот-файлы не индексируются поисковиками
 [[headers]]
-  for = "/panel-7f3k9x/*"
+  for = "/admpan/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
