@@ -1,54 +1,1616 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LAPSHA Guide — preview update v2</title>
-<style>
-:root{
-  --bg:#15100c;--surface:#241c14;--surface-2:#1d1711;--gold:#c9a24b;--gold-bright:#e9c877;
-  --gold-dim:#8e7136;--text:#f1e8d8;--text-muted:#a89a86;--text-faint:#746a5e;
-  --line:rgba(201,162,75,.16);--line-strong:rgba(201,162,75,.34);
-  --font-head:Georgia,serif;--font-body:Arial,sans-serif;--font-mono:Consolas,monospace;
-}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);padding-bottom:90px}
-.hero{padding:70px 20px;text-align:center;border-bottom:1px solid var(--line);background:radial-gradient(600px 300px at 50% 0%,rgba(201,162,75,.08),transparent)}
-.hero small{font:11px var(--font-mono);letter-spacing:.18em;color:var(--gold)}.hero h1{font:450 clamp(34px,7vw,58px)/1.05 var(--font-head);margin:15px 0}.hero p{color:var(--text-muted)}
-.news-ticker{display:block}.section{max-width:1200px;margin:0 auto}.section-num{font:11px var(--font-mono);letter-spacing:.15em;color:var(--gold-dim)}.section-head h2{font:450 clamp(30px,5vw,42px)/1 var(--font-head);margin:8px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;overflow:hidden}.card-photo-wrap{height:200px;margin:-18px -20px 14px;position:relative;background:linear-gradient(135deg,#3b2d22,#19130f);overflow:hidden}.card-photo-wrap::after{content:'ФОТО НАПИТКА';position:absolute;inset:0;display:grid;place-items:center;color:var(--text-faint);font:10px var(--font-mono);letter-spacing:.16em}.card h3{font:500 21px var(--font-head);margin:0}.eng{font:11px var(--font-mono);color:var(--text-faint);margin-top:4px}.teaser{font-size:13.5px;line-height:1.6;color:var(--text-muted)}.tags{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.tag{font:10px var(--font-mono);padding:4px 8px;border:1px solid var(--line);border-radius:20px;color:var(--gold)}details{border-top:1px dashed var(--line);padding-top:10px}summary{color:var(--gold);font:11px var(--font-mono);cursor:pointer}.detail-row{margin-top:8px;color:var(--text-muted);font-size:13px}.card-top{display:flex;justify-content:space-between;gap:10px}.spirit-group{margin-bottom:40px}.spirit-group h4{font:450 20px var(--font-head);color:var(--gold-bright)}
-.back-to-top{display:none}.intro{max-width:900px;margin:auto;padding:45px 20px;color:var(--text-muted);text-align:center}
-</style>
-<link rel="stylesheet" href="assets/lapsha-update-v2.css">
-</head>
-<body>
-<section class="hero" id="top"><small>ПРЕДПРОСМОТР ОБНОВЛЕНИЯ</small><h1>LAPSHA BAR WOK</h1><p>Новый вид новостей, категорий, поиска и рамок напитков</p></section>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAPSHA v3 · Предпросмотр</title>
+<meta name="robots" content="noindex, nofollow">
 
-<div class="news-ticker lapsha-news-v2 show" id="newsTicker" data-lapsha-v2="1">
-  <div class="lapsha-news-shell">
-    <div class="lapsha-news-head">
-      <div class="lapsha-news-title-wrap"><span class="lapsha-news-kicker">Обновления меню</span><h2 class="lapsha-news-title">Новости</h2><p class="lapsha-news-subtitle">Листайте влево и вправо — здесь собраны актуальные изменения, новые позиции и важные заметки для команды.</p></div>
-      <div class="lapsha-news-controls"><button class="lapsha-news-btn" onclick="document.querySelector('.lapsha-news-viewport').scrollBy({left:-400,behavior:'smooth'})">←</button><button class="lapsha-news-btn" onclick="document.querySelector('.lapsha-news-viewport').scrollBy({left:400,behavior:'smooth'})">→</button></div>
+
+<style>:root{
+  --bg:#15100c;
+  --surface:#241c14;
+  --surface-2:#2b2117;
+  --line: rgba(201,162,75,0.18);
+  --line-strong: rgba(201,162,75,0.4);
+  --gold:#c9a24b;
+  --gold-bright:#e9c877;
+  --gold-dim:#8a713c;
+  --text:#f1e8d8;
+  --text-muted:#a89a86;
+  --text-faint:#6f6455;
+  --font-head:'Fraunces', serif;
+  --font-body:'Manrope', sans-serif;
+  --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth; overflow-x:hidden;}
+body{overflow-x:hidden;}
+p,h1,h2,h3,h4,span,div{ overflow-wrap:break-word; }
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(201,162,75,0.07), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(201,162,75,0.05), transparent 60%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+}
+::selection{ background:var(--gold-dim); color:#fff; }
+a{color:inherit;}
+img{max-width:100%; display:block;}
+
+.ring{ display:inline-block; width:1em; height:1em; border-radius:50%; border:1.5px solid var(--gold); position:relative; vertical-align:middle; flex:none;}
+
+/* ---------- HERO ---------- */
+.hero{ min-height:78vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 24px 40px; position:relative; overflow:hidden; border-bottom:1px solid var(--line);}
+.hero::before{ content:''; position:absolute; top:50%; left:50%; width:900px; height:900px; transform:translate(-50%,-50%); border-radius:50%; border:1px solid var(--line); opacity:.6;}
+.hero::after{ content:''; position:absolute; top:50%; left:50%; width:620px; height:620px; transform:translate(-50%,-50%); border-radius:50%; border:1px solid var(--line);}
+.hero-logo{ max-width:200px; max-height:110px; width:auto; height:auto; margin-bottom:30px; filter: drop-shadow(0 0 40px rgba(201,162,75,0.15)); position:relative; z-index:2;}
+.hero-logo.placeholder{ font-family:var(--font-head); font-size:26px; letter-spacing:.08em; color:var(--gold-bright); border:1px solid var(--line-strong); padding:14px 26px; border-radius:4px;}
+.hero-eyebrow{ position:relative; z-index:2; font-family:var(--font-mono); letter-spacing:.28em; font-size:11px; text-transform:uppercase; color:var(--gold); margin-bottom:18px;}
+.hero h1{ position:relative; z-index:2; font-family:var(--font-head); font-weight:450; font-size:clamp(34px, 6.5vw, 66px); line-height:1.08; letter-spacing:-.01em; max-width:900px;}
+.hero h1 em{ font-style:italic; color:var(--gold-bright); font-weight:300;}
+.hero p.lead{ position:relative; z-index:2; max-width:560px; margin-top:18px; color:var(--text-muted); font-size:15px; line-height:1.7;}
+.hero-quote{ position:relative; z-index:2; margin-top:36px; max-width:520px; font-family:var(--font-head); font-style:italic; font-size:18px; color:var(--gold-bright); line-height:1.5; padding:0 20px;}
+
+/* ---------- NEWS TICKER ---------- */
+.news-ticker{ display:none; background:var(--surface); border-bottom:1px solid var(--line);}
+.news-ticker.show{ display:block;}
+.news-ticker-inner{ max-width:1200px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:10px;}
+.news-ticker-label{ flex:none; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); background:rgba(201,162,75,0.1); border:1px solid var(--line); padding:5px 11px; border-radius:20px;}
+.news-ticker-nav{ flex:none; width:26px; height:26px; border-radius:50%; background:transparent; border:1px solid var(--line); color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.2s; padding:0;}
+.news-ticker-nav:hover{ border-color:var(--gold); color:var(--gold-bright);}
+.news-ticker-nav svg{ width:13px; height:13px;}
+.news-ticker-viewport{ flex:1; min-width:0; overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; cursor:grab;}
+.news-ticker-viewport::-webkit-scrollbar{ display:none;}
+.news-ticker-viewport.dragging{ cursor:grabbing; scroll-behavior:auto;}
+.news-ticker-track{ display:flex; align-items:center; white-space:nowrap; width:max-content;}
+.news-item{ display:inline-flex; align-items:center; gap:9px; font-size:13px; color:var(--text-muted); padding-right:40px;}
+.news-item .dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); flex:none;}
+.news-item .date{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-faint);}
+@media (max-width:720px){
+  .news-ticker-label{ display:none;}
+  .news-item{ padding-right:28px; font-size:12.5px;}
+}
+
+/* ---------- INTRO ---------- */
+.intro{ max-width:900px; margin:0 auto; padding:70px 24px; border-bottom:1px solid var(--line);}
+.intro-grid{ display:grid; grid-template-columns:1fr 2fr; gap:40px;}
+.intro-label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); padding-top:6px;}
+.intro-body p{ color:var(--text-muted); font-size:15px; line-height:1.8; margin-bottom:16px;}
+.toc{ margin-top:28px; display:grid; grid-template-columns:repeat(2,1fr); gap:8px 24px;}
+.toc a{ font-size:13.5px; color:var(--text-muted); text-decoration:none; display:flex; align-items:center; gap:9px; padding:5px 0; border-bottom:1px dashed transparent; transition:.2s;}
+.toc a:hover{ color:var(--gold-bright); border-color:var(--line-strong);}
+.toc a .ring{ width:6px; height:6px;}
+
+/* ---------- NAV ---------- */
+.navbar{ position:sticky; top:0; z-index:50; background:rgba(21,16,12,0.9); backdrop-filter:blur(14px); border-bottom:1px solid var(--line);}
+.navbar-inner{ max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+.nav-brand{ display:flex; align-items:center; gap:9px; font-family:var(--font-head); font-size:14px; color:var(--gold-bright); white-space:nowrap; flex:none; text-decoration:none;}
+.nav-brand img{ height:20px; width:auto; opacity:.9;}
+.search-wrap{ position:relative; flex:1; min-width:160px; max-width:300px;}
+.search-wrap input{ width:100%; background:var(--surface); border:1px solid var(--line); color:var(--text); font-family:var(--font-body); font-size:13px; padding:9px 14px 9px 32px; border-radius:20px; outline:none; transition:.2s;}
+.search-wrap input:focus{ border-color:var(--gold);}
+.search-wrap input::placeholder{ color:var(--text-faint);}
+.search-wrap svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:13px; height:13px; stroke:var(--text-faint);}
+.chips{ display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; flex:2;}
+.chips::-webkit-scrollbar{ display:none;}
+.chip{ flex:none; font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-muted); background:transparent; border:1px solid var(--line); padding:7px 13px; border-radius:20px; cursor:pointer; transition:.2s; white-space:nowrap;}
+.chip:hover{ border-color:var(--gold-dim); color:var(--text);}
+.chip.active{ background:var(--gold); border-color:var(--gold); color:#1a1410; font-weight:600;}
+
+/* tag chips inside cards — clickable filters */
+.tags{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0;}
+.tag{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--gold); background:rgba(201,162,75,0.1); border:1px solid var(--line); padding:4px 9px; border-radius:20px; cursor:pointer; transition:.2s; }
+.tag:hover, .tag.active{ background:var(--gold); color:#1a1410; border-color:var(--gold);}
+.active-filter-bar{ display:none; max-width:1200px; margin:0 auto; padding:0 24px 20px; align-items:center; gap:10px; flex-wrap:wrap;}
+.active-filter-bar.show{ display:flex;}
+.active-filter-bar .lbl{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:.1em;}
+.clear-filter{ font-family:var(--font-mono); font-size:11px; color:var(--gold-bright); background:none; border:1px solid var(--line-strong); padding:5px 12px; border-radius:20px; cursor:pointer;}
+
+/* ---------- SECTIONS ---------- */
+.section{ max-width:1200px; margin:0 auto; padding:70px 24px 20px; scroll-margin-top:80px;}
+.section-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:36px; padding-bottom:22px; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.section-num{ font-family:var(--font-mono); font-size:11px; letter-spacing:.15em; color:var(--gold-dim); text-transform:uppercase;}
+.section-head h2{ font-family:var(--font-head); font-size:clamp(26px,4vw,38px); font-weight:450; margin-top:4px; display:flex; align-items:center; gap:12px;}
+.section-desc{ color:var(--text-muted); font-size:14px; max-width:340px;}
+.staff-tip{ background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold); padding:14px 18px; border-radius:6px; font-size:14px; color:var(--text-muted); line-height:1.7; margin-bottom:30px;}
+.staff-tip .lbl{ color:var(--gold-bright); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:6px;}
+.spirit-group{ margin-bottom:36px;}
+.spirit-group h4{ font-family:var(--font-head); font-size:18px; font-weight:450; color:var(--gold-bright); margin-bottom:16px;}
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; min-width:0;}
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; transition:.2s; overflow:hidden; min-width:0; max-width:100%;}
+.card:hover{ border-color:var(--line-strong);}
+.card-photo-wrap{ width:calc(100% + 40px); margin:-18px -20px 14px; aspect-ratio:4/3; background:var(--surface-2); overflow:hidden; position:relative; cursor:zoom-in;}
+.card-photo{ width:100%; height:100%; object-fit:cover; object-position:center; background:var(--surface-2); display:block; transition:transform .5s cubic-bezier(.2,.7,.3,1), filter .5s;}
+.card-photo-wrap:hover .card-photo{ transform:scale(1.06); }
+.card-photo-wrap::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(15,11,7,0.55) 100%); opacity:0; transition:opacity .3s; pointer-events:none;}
+.card-photo-wrap:hover::after{ opacity:1; }
+.photo-zoom-hint{ position:absolute; right:12px; bottom:12px; width:34px; height:34px; border-radius:50%; background:rgba(21,16,12,0.72); border:1px solid var(--line-strong); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; opacity:0; transform:translateY(6px) scale(.9); transition:.25s; pointer-events:none;}
+.photo-zoom-hint svg{ width:15px; height:15px; stroke:var(--gold-bright); }
+.card-photo-wrap:hover .photo-zoom-hint{ opacity:1; transform:translateY(0) scale(1); }
+.card-photo-wrap:focus-visible{ outline:2px solid var(--gold); outline-offset:-2px; }
+.card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; min-width:0;}
+.card h3{ font-family:var(--font-head); font-size:19px; font-weight:500; color:var(--text); overflow-wrap:anywhere; word-break:break-word;}
+.eng{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:2px; overflow-wrap:anywhere;}
+.teaser{ color:var(--text-muted); font-size:13.5px; line-height:1.65; margin-top:8px; overflow-wrap:anywhere; word-break:break-word;}
+details{ margin-top:12px; border-top:1px dashed var(--line); padding-top:10px; max-width:100%; overflow-wrap:anywhere;}
+summary{ cursor:pointer; font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); list-style:none;}
+summary::-webkit-details-marker{ display:none;}
+summary::before{ content:'+ '; }
+details[open] summary::before{ content:'− ';}
+.detail-row{ font-size:13px; color:var(--text-muted); margin-top:8px; line-height:1.6; overflow-wrap:anywhere; word-break:break-word; max-width:100%;}
+.detail-row .k{ display:block; font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold-dim); margin-bottom:2px;}
+.present{ margin-top:12px; font-family:var(--font-head); font-style:italic; font-size:13.5px; color:var(--gold-bright); line-height:1.6; padding-top:10px; border-top:1px dashed var(--line); overflow-wrap:anywhere; word-break:break-word;}
+
+.spirit-list{ display:flex; flex-direction:column; gap:2px;}
+.spirit-item{ display:flex; justify-content:space-between; gap:20px; padding:11px 4px; border-bottom:1px solid var(--line); font-size:14px;}
+.sname{ color:var(--text); font-weight:600; flex:none; min-width:220px;}
+.snote{ color:var(--text-muted); text-align:right;}
+
+#noResults{ display:none; text-align:center; padding:60px 24px; color:var(--text-faint); font-family:var(--font-mono); font-size:13px; letter-spacing:.1em; text-transform:uppercase;}
+
+footer{ max-width:1200px; margin:60px auto 0; padding:30px 24px; border-top:1px solid var(--line); color:var(--text-faint); font-size:12px; text-align:center; font-family:var(--font-mono);}
+
+/* ---------- LIGHTBOX ---------- */
+.lightbox{
+  position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
+  background:rgba(10,7,5,0.88); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden; transition:opacity .28s ease;
+  padding:60px 24px;
+}
+.lightbox.open{ opacity:1; visibility:visible; }
+.lightbox-figure{ position:relative; max-width:min(92vw,1100px); max-height:88vh; display:flex; flex-direction:column; align-items:center; transform:scale(.96); transition:transform .28s ease; }
+.lightbox.open .lightbox-figure{ transform:scale(1); }
+.lightbox-img{ max-width:100%; max-height:76vh; object-fit:contain; border-radius:8px; box-shadow:0 30px 80px rgba(0,0,0,0.55); border:1px solid var(--line-strong); background:var(--surface-2); }
+.lightbox-caption{ margin-top:16px; text-align:center; font-family:var(--font-head); font-size:18px; color:var(--gold-bright); font-style:italic; max-width:640px; }
+.lightbox-close, .lightbox-nav{
+  position:absolute; display:flex; align-items:center; justify-content:center;
+  width:42px; height:42px; border-radius:50%; background:rgba(21,16,12,0.75); border:1px solid var(--line-strong);
+  color:var(--text); cursor:pointer; transition:.2s; backdrop-filter:blur(6px);
+}
+.lightbox-close:hover, .lightbox-nav:hover{ background:var(--gold); border-color:var(--gold); color:#1a1410; }
+.lightbox-close{ top:-18px; right:-18px; }
+.lightbox-close svg, .lightbox-nav svg{ width:18px; height:18px; }
+.lightbox-nav{ top:50%; transform:translateY(-50%); position:fixed; }
+.lightbox-nav.prev{ left:max(16px, calc(50% - 560px - 60px)); }
+.lightbox-nav.next{ right:max(16px, calc(50% - 560px - 60px)); }
+.lightbox-count{ position:absolute; top:-18px; left:0; font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; color:var(--text-faint); }
+@media (max-width:720px){
+  .lightbox{ padding:40px 16px; }
+  .lightbox-close{ top:-46px; right:0; }
+  .lightbox-count{ top:-46px; }
+  .lightbox-nav{ width:38px; height:38px; }
+  .lightbox-nav.prev{ left:6px; }
+  .lightbox-nav.next{ right:6px; }
+}
+
+/* ---------- BACK TO TOP ---------- */
+.back-to-top{
+  position:fixed; right:20px; bottom:20px; z-index:60; width:44px; height:44px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--line-strong); color:var(--gold-bright);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  opacity:0; visibility:hidden; transform:translateY(8px); transition:.25s;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+.back-to-top.show{ opacity:1; visibility:visible; transform:translateY(0); }
+.back-to-top:hover{ background:var(--gold); border-color:var(--gold); color:#1a1410; }
+.back-to-top svg{ width:17px; height:17px; }
+
+/* ---------- SCROLL REVEAL ---------- */
+.card, .spirit-group, .section-head, .staff-tip{
+  opacity:0; transform:translateY(16px);
+  transition:opacity .55s ease, transform .55s ease;
+}
+.card.in-view, .spirit-group.in-view, .section-head.in-view, .staff-tip.in-view{
+  opacity:1; transform:translateY(0);
+}
+@media (prefers-reduced-motion: reduce){
+  .card, .spirit-group, .section-head, .staff-tip{ opacity:1; transform:none; }
+  .card-photo{ transition:none; }
+  .card-photo-wrap:hover .card-photo{ transform:none; }
+}
+
+/* ---------- PRINT ---------- */
+@media print{
+  .navbar, .hero-scroll, .active-filter-bar, details summary, .search-wrap, .chips, .lightbox, .back-to-top, .photo-zoom-hint, .news-ticker{ display:none !important;}
+  body{ background:#fff; color:#111; padding-bottom:0;}
+  .hero{ min-height:auto; border:none;}
+  .hero::before,.hero::after{ display:none;}
+  .card{ break-inside:avoid; border:1px solid #ccc; background:#fff;}
+  .section{ padding:20px 0;}
+  details{ display:block;}
+  details > summary{ display:none;}
+  a{ text-decoration:none; color:#111;}
+  .present, .card h3, .section-head h2{ color:#111;}
+}
+
+@media (max-width:720px){
+  .intro-grid{ grid-template-columns:1fr;}
+  .toc{ grid-template-columns:1fr;}
+  .navbar-inner{ gap:10px;}
+  .search-wrap{ order:3; max-width:none; flex:1 1 100%;}
+}
+@media (max-width:360px){
+  .grid{ grid-template-columns:1fr;}
+  .card{ padding:16px;}
+  .card-photo-wrap{ width:calc(100% + 32px); margin:-16px -16px 14px;}
+}
+</style>
+<style>/* LAPSHA Guide UI Update v2 — news carousel, category descriptions, quick search, drink frames */
+
+:root{
+  --lapsha-alco:#ff5b5b;
+  --lapsha-nonalco:#58a9ff;
+  --lapsha-cold:#65d9f3;
+  --lapsha-search-bg:rgba(17,13,10,.96);
+}
+
+/* ---------- CATEGORY / DESCRIPTION ---------- */
+.section{
+  padding-top:84px;
+}
+
+.section-head{
+  display:block;
+  max-width:860px;
+  margin:0 0 34px;
+  padding:0 0 24px;
+  border-bottom:1px solid var(--line);
+}
+
+.section-head > div{
+  width:100%;
+}
+
+.section-head h2{
+  margin-top:7px;
+  line-height:1.08;
+  letter-spacing:-.015em;
+}
+
+.section-desc{
+  position:relative;
+  display:block;
+  max-width:720px;
+  margin-top:15px;
+  padding-left:18px;
+  color:var(--text-muted);
+  font-size:15px;
+  line-height:1.75;
+  text-wrap:pretty;
+}
+
+.section-desc::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:.25em;
+  bottom:.25em;
+  width:2px;
+  border-radius:3px;
+  background:linear-gradient(180deg,var(--gold),transparent);
+}
+
+.spirit-group{
+  margin-top:18px;
+  margin-bottom:48px;
+}
+
+.spirit-group h4{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+  font-size:20px;
+}
+
+.spirit-group h4::after{
+  content:'';
+  height:1px;
+  flex:1;
+  background:linear-gradient(90deg,var(--line-strong),transparent);
+}
+
+/* ---------- NEWS: LARGE HORIZONTAL CAROUSEL ---------- */
+.news-ticker.lapsha-news-v2{
+  display:block;
+  background:
+    radial-gradient(720px 240px at 12% 0%, rgba(201,162,75,.08), transparent 65%),
+    var(--surface);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:28px 0 30px;
+  overflow:hidden;
+}
+
+.lapsha-news-shell{
+  max-width:1320px;
+  margin:0 auto;
+  padding:0 24px;
+}
+
+.lapsha-news-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.lapsha-news-title-wrap{
+  min-width:0;
+}
+
+.lapsha-news-kicker{
+  display:block;
+  margin-bottom:6px;
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gold);
+}
+
+.lapsha-news-title{
+  margin:0;
+  font-family:var(--font-head);
+  font-size:clamp(25px,4vw,38px);
+  font-weight:450;
+  line-height:1.08;
+}
+
+.lapsha-news-subtitle{
+  margin-top:7px;
+  max-width:680px;
+  color:var(--text-muted);
+  font-size:13px;
+  line-height:1.55;
+}
+
+.lapsha-news-controls{
+  display:flex;
+  gap:8px;
+  flex:none;
+}
+
+.lapsha-news-btn{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  border:1px solid var(--line-strong);
+  background:rgba(255,255,255,.02);
+  color:var(--gold-bright);
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.lapsha-news-btn:hover{
+  border-color:var(--gold);
+  background:rgba(201,162,75,.1);
+}
+
+.lapsha-news-btn svg{
+  width:17px;
+  height:17px;
+}
+
+.lapsha-news-viewport{
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  scroll-snap-type:x mandatory;
+  scroll-padding-inline:2px;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-x pan-y;
+}
+
+.lapsha-news-viewport::-webkit-scrollbar{display:none;}
+
+.lapsha-news-track{
+  display:flex;
+  align-items:stretch;
+  gap:14px;
+  width:max-content;
+  padding:2px 2px 7px;
+}
+
+.lapsha-news-card{
+  position:relative;
+  width:clamp(320px,38vw,470px);
+  min-height:150px;
+  padding:20px 22px 22px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.025),transparent 60%),
+    var(--surface-2);
+  scroll-snap-align:start;
+  overflow:hidden;
+  box-shadow:0 14px 40px rgba(0,0,0,.13);
+}
+
+.lapsha-news-card::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent 75%);
+  opacity:.8;
+}
+
+.lapsha-news-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.lapsha-news-index,
+.lapsha-news-date{
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+}
+
+.lapsha-news-index{
+  color:var(--gold);
+}
+
+.lapsha-news-message{
+  margin:0;
+  font-family:var(--font-head);
+  font-size:clamp(18px,2.3vw,23px);
+  font-weight:450;
+  line-height:1.38;
+  color:var(--text);
+  text-wrap:pretty;
+}
+
+.lapsha-news-count{
+  margin-top:10px;
+  font-family:var(--font-mono);
+  font-size:10px;
+  color:var(--text-faint);
+  letter-spacing:.08em;
+}
+
+/* ---------- DRINK VISUAL TYPES ---------- */
+.card{
+  position:relative;
+  border-width:1px;
+}
+
+.card.drink-alco,
+.card.drink-nonalco,
+.card.drink-cold{
+  border-width:1px;
+}
+
+.card.drink-alco{
+  border-color:color-mix(in srgb,var(--lapsha-alco) 58%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lapsha-alco) 12%,transparent), 0 12px 36px rgba(0,0,0,.14);
+}
+
+.card.drink-nonalco{
+  border-color:color-mix(in srgb,var(--lapsha-nonalco) 58%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lapsha-nonalco) 12%,transparent), 0 12px 36px rgba(0,0,0,.14);
+}
+
+.card.drink-cold:not(.drink-alco):not(.drink-nonalco){
+  border-color:color-mix(in srgb,var(--lapsha-cold) 58%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lapsha-cold) 12%,transparent), 0 12px 36px rgba(0,0,0,.14);
+}
+
+.card.drink-alco .card-photo-wrap::before,
+.card.drink-nonalco .card-photo-wrap::before,
+.card.drink-cold .card-photo-wrap::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  border-bottom:2px solid transparent;
+}
+
+.card.drink-alco .card-photo-wrap::before{border-bottom-color:color-mix(in srgb,var(--lapsha-alco) 72%,transparent);}
+.card.drink-nonalco .card-photo-wrap::before{border-bottom-color:color-mix(in srgb,var(--lapsha-nonalco) 72%,transparent);}
+.card.drink-cold:not(.drink-alco):not(.drink-nonalco) .card-photo-wrap::before{border-bottom-color:color-mix(in srgb,var(--lapsha-cold) 72%,transparent);}
+
+.drink-flags{
+  position:absolute;
+  top:11px;
+  right:11px;
+  z-index:5;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:6px;
+  max-width:calc(100% - 22px);
+  pointer-events:none;
+}
+
+.card:not(:has(.card-photo-wrap)) .drink-flags{
+  position:static;
+  justify-content:flex-start;
+  margin:-2px 0 12px;
+  max-width:100%;
+}
+
+.drink-flag{
+  display:inline-flex;
+  align-items:center;
+  min-height:24px;
+  padding:4px 8px;
+  border-radius:999px;
+  border:1px solid currentColor;
+  background:rgba(15,11,7,.78);
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
+  font-family:var(--font-mono);
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.08em;
+  line-height:1;
+  text-transform:uppercase;
+  box-shadow:0 5px 18px rgba(0,0,0,.2);
+}
+
+.drink-flag.alco{color:var(--lapsha-alco);}
+.drink-flag.nonalco{color:var(--lapsha-nonalco);}
+.drink-flag.cold{color:var(--lapsha-cold);}
+
+.tag.system-drink-tag{display:none !important;}
+
+/* ---------- FLOATING QUICK SEARCH ---------- */
+.back-to-top{
+  bottom:76px;
+}
+
+.quick-find-fab{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:80;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line-strong);
+  background:var(--surface);
+  color:var(--gold-bright);
+  box-shadow:0 12px 34px rgba(0,0,0,.38);
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+
+.quick-find-fab:hover{
+  transform:translateY(-2px);
+  border-color:var(--gold);
+  background:var(--surface-2);
+}
+
+.quick-find-fab svg{width:20px;height:20px;}
+
+.quick-find-overlay{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding:18px;
+  background:rgba(7,5,4,.62);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  opacity:0;
+  visibility:hidden;
+  transition:.2s ease;
+}
+
+.quick-find-overlay.open{
+  opacity:1;
+  visibility:visible;
+}
+
+.quick-find-panel{
+  width:min(760px,100%);
+  max-height:min(78vh,720px);
+  display:flex;
+  flex-direction:column;
+  border:1px solid var(--line-strong);
+  border-radius:22px 22px 12px 12px;
+  background:var(--lapsha-search-bg);
+  box-shadow:0 28px 80px rgba(0,0,0,.5);
+  overflow:hidden;
+  transform:translateY(16px);
+  transition:.22s ease;
+}
+
+.quick-find-overlay.open .quick-find-panel{transform:translateY(0);}
+
+.quick-find-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px;
+  border-bottom:1px solid var(--line);
+}
+
+.quick-find-input-wrap{
+  position:relative;
+  flex:1;
+}
+
+.quick-find-input-wrap svg{
+  position:absolute;
+  left:13px;
+  top:50%;
+  width:17px;
+  height:17px;
+  transform:translateY(-50%);
+  stroke:var(--text-faint);
+}
+
+.quick-find-input{
+  width:100%;
+  min-height:46px;
+  padding:10px 14px 10px 40px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  outline:none;
+  background:var(--surface);
+  color:var(--text);
+  font:500 14px/1.3 var(--font-body);
+}
+
+.quick-find-input:focus{border-color:var(--gold);}
+.quick-find-input::placeholder{color:var(--text-faint);}
+
+.quick-find-close{
+  width:42px;
+  height:42px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  color:var(--text-muted);
+  cursor:pointer;
+}
+
+.quick-find-close:hover{background:rgba(255,255,255,.05);color:var(--text);}
+.quick-find-close svg{width:19px;height:19px;}
+
+.quick-find-results{
+  overflow:auto;
+  padding:10px;
+  overscroll-behavior:contain;
+}
+
+.quick-find-empty{
+  padding:32px 18px;
+  color:var(--text-faint);
+  text-align:center;
+  font-size:13px;
+}
+
+.quick-find-result{
+  width:100%;
+  display:grid;
+  grid-template-columns:46px minmax(0,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:11px 12px;
+  border:0;
+  border-bottom:1px solid var(--line);
+  border-radius:11px;
+  background:transparent;
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+.quick-find-result:hover,
+.quick-find-result:focus-visible{
+  outline:none;
+  background:rgba(201,162,75,.07);
+}
+
+.quick-find-icon{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  color:var(--gold);
+  font-family:var(--font-head);
+  font-size:16px;
+}
+
+.quick-find-name{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.quick-find-meta{
+  display:block;
+  margin-top:3px;
+  color:var(--text-faint);
+  font-size:11px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.quick-find-go{
+  color:var(--gold);
+  font-family:var(--font-mono);
+  font-size:10px;
+  letter-spacing:.05em;
+}
+
+.card.quick-find-hit{
+  animation:lapshaQuickHit 1.6s ease;
+}
+
+@keyframes lapshaQuickHit{
+  0%,100%{box-shadow:inherit;}
+  25%{box-shadow:0 0 0 3px rgba(201,162,75,.22),0 16px 46px rgba(0,0,0,.28);}
+}
+
+@media (max-width:720px){
+  .section{padding:64px 18px 14px;}
+  .section-head{
+    text-align:center;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .section-head h2{justify-content:center;}
+  .section-desc{
+    margin-left:auto;
+    margin-right:auto;
+    padding:14px 0 0;
+    font-size:14px;
+    text-align:center;
+  }
+  .section-desc::before{
+    left:50%;
+    top:0;
+    bottom:auto;
+    width:56px;
+    height:2px;
+    transform:translateX(-50%);
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+  .spirit-group h4{
+    font-size:19px;
+  }
+  .lapsha-news-v2{padding:24px 0 24px;}
+  .lapsha-news-shell{padding:0 16px;}
+  .lapsha-news-head{align-items:center;}
+  .lapsha-news-subtitle{font-size:12px;}
+  .lapsha-news-card{
+    width:min(84vw,360px);
+    min-height:142px;
+    padding:18px;
+    border-radius:16px;
+  }
+  .lapsha-news-controls{display:none;}
+  .quick-find-fab{right:16px;bottom:16px;}
+  .back-to-top{right:16px;bottom:72px;}
+  .quick-find-overlay{padding:0;align-items:flex-end;}
+  .quick-find-panel{
+    width:100%;
+    max-height:84vh;
+    border-radius:22px 22px 0 0;
+    border-left:0;
+    border-right:0;
+    border-bottom:0;
+  }
+  .quick-find-result{grid-template-columns:42px minmax(0,1fr);}
+  .quick-find-go{display:none;}
+}
+
+@media print{
+  .quick-find-fab,.quick-find-overlay{display:none !important;}
+}
+</style>
+<style>/* v3: extends the existing chocolate / gold identity. */
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--gold-bright);outline-offset:4px}
+.hero{min-height:54vh;padding-top:115px}
+.section,.intro{max-width:1320px}
+.section-head{max-width:none}
+.section-head[data-align]{text-align:var(--align,left)}
+[data-align=left]{--align:left;text-align:left}
+[data-align=center]{--align:center;text-align:center}
+[data-align=right]{--align:right;text-align:right}
+.section-head[data-align=left] h2{justify-content:flex-start}
+.section-head[data-align=center] h2{justify-content:center}
+.section-head[data-align=right] h2{justify-content:flex-end}
+.section-desc{font-size:1rem;line-height:1.8;white-space:pre-line;max-width:800px;padding:12px 0 0;margin:8px 0 0;text-align:inherit}
+.section-desc:before{display:none}
+[data-align=center] .section-desc{margin-inline:auto}
+[data-align=right] .section-desc{margin-left:auto}
+.card{min-width:0;scroll-margin-top:150px}
+.card-top{gap:12px;align-items:flex-start}
+.card-top>div:first-child{flex:1;min-width:0}
+.card h3{line-height:1.35}
+.card .teaser,.card .detail-row,.card .present{font-size:1rem;line-height:1.7;white-space:pre-line}
+.card .drink-flags{position:static;max-width:100%;margin:0 0 14px;justify-content:flex-start;pointer-events:auto}
+[data-align=center] .drink-flags,[data-align=center] .tags{justify-content:center}
+[data-align=right] .drink-flags,[data-align=right] .tags{justify-content:flex-end}
+.drink-flag{font-size:12px;min-height:28px}
+.tag{font-family:inherit;cursor:pointer}
+.card summary{min-height:44px;padding-block:12px}
+.news-ticker.lapsha-news-v2{padding-block:32px}
+.lapsha-news-card{width:clamp(340px,46vw,590px);min-height:220px;padding:26px;flex-shrink:0}
+.lapsha-news-card.is-pinned{border-color:var(--gold)}
+.news-heading{font:600 clamp(24px,3vw,32px)/1.2 var(--font-head);margin:0 0 16px}
+.lapsha-news-message{font:400 1rem/1.75 var(--font-body);white-space:pre-line;overflow-wrap:anywhere}
+.lapsha-news-index,.lapsha-news-date,.lapsha-news-count,.lapsha-news-kicker{font-size:12px}
+.lapsha-news-subtitle{font-size:14px}
+.lapsha-news-controls{display:flex}
+.lapsha-news-btn{width:44px;height:44px;font-size:20px}
+.lapsha-news-btn:disabled{opacity:.3;cursor:default}
+.lapsha-news-viewport{cursor:grab}
+.lapsha-news-viewport.dragging{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.quick-find-input{font-size:16px}
+.quick-find-panel{max-height:80dvh;color:var(--text)}
+.quick-find-meta{font-size:13px}
+.quick-find-fab{bottom:calc(18px + env(safe-area-inset-bottom));width:52px;height:52px}
+.back-to-top{bottom:calc(80px + env(safe-area-inset-bottom))}
+.group-desc{font-size:1rem;line-height:1.75;white-space:pre-line;margin-bottom:22px;color:var(--text-muted)}
+.menu-tools{max-width:1272px;margin:24px auto 0;padding:16px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.menu-tools button,.favorite-toggle{border:1px solid var(--line-strong);background:var(--surface);color:var(--gold-bright);padding:10px 14px;border-radius:24px;font:inherit;cursor:pointer;min-height:44px}
+.menu-tools button[aria-pressed=true],.favorite-toggle[aria-pressed=true]{background:var(--gold);color:var(--bg)}
+.favorite-toggle{margin-top:16px;font-size:14px}
+.load-error{padding:40px 24px;text-align:center}
+@media(max-width:720px){.hero{min-height:440px;padding-top:140px}.lapsha-news-card{width:calc(100vw - 64px);min-height:210px;padding:20px}.lapsha-news-head{align-items:flex-start}.lapsha-news-controls{gap:4px}.lapsha-news-shell{padding-inline:16px}.lapsha-news-meta{flex-wrap:wrap;gap:8px}.section-desc{font-size:1rem}.section{padding-top:48px}.menu-tools{padding:12px 18px}.quick-find-head{padding:10px}.quick-find-panel{padding-bottom:env(safe-area-inset-bottom)}.section-head h2{font-size:clamp(28px,8vw,40px)}}
+@media print{.menu-tools,.favorite-toggle{display:none}}
+</style>
+</head>
+<body><div style="position:relative;z-index:120;padding:12px 18px;background:#c9a24b;color:#15100c;text-align:center;font:14px sans-serif">Предпросмотр v3 · демонстрационные данные, не ваше опубликованное меню</div>
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <a href="#top" class="nav-brand" id="navBrand">Гид</a>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input aria-label="Поиск по меню" id="search" type="text" placeholder="Поиск по вкусу, аромату, названию…">
     </div>
-    <div class="lapsha-news-viewport"><div class="lapsha-news-track">
-      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 01</span><span class="lapsha-news-date">02 сентября 2026</span></div><p class="lapsha-news-message">В авторских лимонадах обновили подачу и уточнили состав.</p></article>
-      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 02</span><span class="lapsha-news-date">01 сентября 2026</span></div><p class="lapsha-news-message">Добавили новую сезонную кофейную позицию — обратите внимание на рекомендации гостю.</p></article>
-      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 03</span><span class="lapsha-news-date">30 августа 2026</span></div><p class="lapsha-news-message">Для холодных напитков появились отметки ICE / COLD, а алкоголь теперь легко отличить по рамке.</p></article>
-      <article class="lapsha-news-card"><div class="lapsha-news-meta"><span class="lapsha-news-index">Новость 04</span><span class="lapsha-news-date">28 августа 2026</span></div><p class="lapsha-news-message">Обновили описания категорий, чтобы новичкам было проще быстро разобраться в меню.</p></article>
-    </div></div>
-    <div class="lapsha-news-count">4 новости · свайп влево / вправо</div>
+    <div class="chips" id="chips"></div>
   </div>
 </div>
 
-<div class="intro">Ниже пример категории: описание располагается сразу под названием, а карточки получают рамку только когда выбран специальный тип.</div>
-<main id="sections">
-<section class="section" id="coffee">
-  <div class="section-head"><div><span class="section-num">01 / КАТЕГОРИЯ</span><h2>☕ Кофе</h2></div><p class="section-desc">Классические и авторские кофейные напитки: от насыщенного эспрессо до мягких молочных сочетаний. Подбирайте напиток под вкус гостя, крепость и настроение.</p></div>
-  <div class="spirit-group"><h4>Классика</h4><div class="grid">
-    <div class="card" data-search="эспрессо кофе насыщенный классика" data-tags=""><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Эспрессо</h3><div class="eng">ESPRESSO</div></div><div class="eng">30 мл</div></div><p class="teaser">Плотный, насыщенный кофе с ярким ароматом и коротким послевкусием.</p><details><summary>Подробнее</summary><div class="detail-row">Вкус: насыщенный, орехово-шоколадный.</div></details></div>
-    <div class="card" data-search="айс латте кофе молочный холодный ice cold" data-tags="non alco|ice"><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Айс латте</h3><div class="eng">ICE LATTE</div></div><div class="eng">350 мл</div></div><div class="tags"><span class="tag" data-tag="NON ALCO">NON ALCO</span><span class="tag" data-tag="ICE">ICE</span><span class="tag" data-tag="Мягкий">Мягкий</span></div><p class="teaser">Холодный молочный кофе с мягким вкусом и освежающей подачей.</p><details><summary>Подробнее</summary><div class="detail-row">Кому рекомендовать: тем, кто любит мягкий холодный кофе.</div></details></div>
-    <div class="card" data-search="кофейный коктейль alco алкоголь холодный" data-tags="alco|cold"><div class="card-photo-wrap"></div><div class="card-top"><div><h3>Espresso Martini</h3><div class="eng">COFFEE COCKTAIL</div></div><div class="eng">120 мл</div></div><div class="tags"><span class="tag" data-tag="ALCO">ALCO</span><span class="tag" data-tag="COLD">COLD</span></div><p class="teaser">Холодный кофейный коктейль с выразительной алкогольной основой.</p><details><summary>Подробнее</summary><div class="detail-row">Подача: охлаждённый бокал, кофейный аромат.</div></details></div>
-  </div></div>
+<div class="active-filter-bar" id="filterBar">
+  <span class="lbl">Фильтр:</span>
+  <span class="tag active" id="activeTagLabel"></span>
+  <button class="clear-filter" id="clearFilter">Сбросить</button>
+</div>
+
+<section class="hero" id="top">
+  <div id="heroLogo"></div>
+  <div class="hero-eyebrow" id="heroEyebrow">ГИД ПО БАРНОМУ МЕНЮ</div>
+  <h1 id="heroTitle">Гид по <em>барному</em> меню</h1>
+  <p class="lead" id="heroSubtitle">Для обучения сотрудников ресторана</p>
+  <p class="hero-quote" id="heroQuote">«Мы не просто подаём напитки — мы создаём впечатления.»</p>
 </section>
-</main>
-<script src="assets/lapsha-update-v2.js"></script>
+
+<div class="news-ticker" id="newsTicker" hidden>
+  <div class="news-ticker-inner">
+    <span class="news-ticker-label">Новости</span>
+    <button class="news-ticker-nav" id="newsPrev" aria-label="Предыдущее обновление">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="news-ticker-viewport" id="newsViewport">
+      <div class="news-ticker-track" id="newsTrack"></div>
+    </div>
+    <button class="news-ticker-nav" id="newsNext" aria-label="Следующее обновление">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="intro">
+  <div class="intro-grid">
+    <div class="intro-label">О гиде</div>
+    <div class="intro-body">
+      <p>Бар — это сердце атмосферы ресторана. Каждый напиток, который мы подаём, отражает качество, философию и характер заведения.</p>
+      <p>Этот гид создан для того, чтобы каждый сотрудник уверенно ориентировался в барном меню, понимал особенности напитков и мог помочь гостю сделать лучший выбор.</p>
+      <div class="toc" id="toc"></div>
+    </div>
+  </div>
+</div>
+
+<main id="sections"></main>
+<div id="noResults">Ничего не найдено</div>
+
+<footer>LAPSHA BAR WOK · Гид по барному меню · Только для сотрудников</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Наверх" title="Наверх">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фото">
+  <div class="lightbox-figure">
+    <span class="lightbox-count" id="lightboxCount"></span>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+<button class="lightbox-nav prev" id="lightboxPrev" aria-label="Предыдущее фото" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="lightbox-nav next" id="lightboxNext" aria-label="Следующее фото" style="display:none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<script>window.SUPABASE_URL='https://demo.invalid';window.SUPABASE_ANON_KEY='demo';window.GUIDE_BUCKET='guide-media';
+const demoData={"settings": null, "categories": [{"id": "coffee", "slug": "coffee", "title": "Кофе", "description": "От насыщенного эспрессо до мягкого латте. Разбираемся во вкусе, аромате и подаче, чтобы помочь гостю выбрать свой напиток.", "text_align": "center", "icon": "coffee", "sort_order": 1, "published": true}, {"id": "cocktails", "slug": "cocktails", "title": "Коктейли", "description": "Цитрусовые, пряные и освежающие сочетания. Перед рекомендацией уточните, предпочитает ли гость напиток с алкоголем.", "icon": "cocktail", "sort_order": 2, "published": true}], "item_groups": [], "items": [{"id": "espresso", "category_id": "coffee", "name": "Эспрессо", "name_en": "Espresso", "teaser": "Насыщенный вкус, плотное тело и долгий ароматный финиш.", "taste": "Шоколадные и ореховые оттенки.", "composition": "Кофе\nВода", "frame_mode": "none", "published": true}, {"id": "latte", "category_id": "coffee", "name": "Айс-латте", "name_en": "Iced latte", "teaser": "Мягкий кофейный вкус с прохладным молочным послевкусием.", "composition": "Эспрессо\nМолоко\nЛёд", "frame_mode": "nonalco", "serving_style": "ice", "published": true}, {"id": "spritz", "category_id": "cocktails", "name": "Цитрусовый спритц", "teaser": "Лёгкая горчинка, цитрусовый аромат и освежающие пузырьки.", "taste": "Цитрусовый, свежий.", "frame_mode": "alco", "serving_style": "cold", "published": true}], "news": [{"id": "0", "title": "Перед началом смены", "message": "Проверьте актуальность меню и уточните стоп-лист у бармена.", "pinned": true, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 0}, {"id": "1", "title": "Как пользоваться гидом", "message": "Нажмите лупу справа снизу. Поиск найдёт напиток по названию, составу или вкусу.", "pinned": false, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 1}, {"id": "2", "title": "Любимые позиции — под рукой", "message": "Добавляйте напитки в избранное, чтобы быстрее возвращаться к ним.", "pinned": false, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 2}, {"id": "3", "title": "Холодные напитки", "message": "Метки ICE и COLD помогают быстро ориентироваться в подаче.", "pinned": false, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 3}, {"id": "4", "title": "Описание каждой категории", "message": "Под заголовком можно разместить короткое знакомство с напитками.", "pinned": false, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 4}, {"id": "5", "title": "Всё о вкусе", "message": "Раскройте подробности карточки: состав, аромат и подсказки для рекомендации.", "pinned": false, "text_align": "left", "created_at": "2026-09-06", "published": true, "sort_order": 5}]};
+window.supabase={createClient:()=>({storage:{from:()=>({getPublicUrl:p=>({data:{publicUrl:p}})})},from:table=>{const q={select:()=>q,eq:()=>q,order:()=>q,single:()=>q,then:(resolve,reject)=>Promise.resolve({data:demoData[table],error:null}).then(resolve,reject)};return q;}})};</script>
+
+<script>// Простой набор inline-SVG иконок для категорий.
+window.ICONS = {
+  coffee:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8z"/><path d="M17 9h2a2.5 2.5 0 0 1 0 5h-2"/><path d="M6 3c-.5 1 .5 1.5 0 2.5M10 3c-.5 1 .5 1.5 0 2.5"/></svg>',
+  tea:      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 9h14v5a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V9z"/><path d="M17 10h2a2 2 0 0 1 0 4h-2"/><path d="M8 3c1 1.5-1 2-0 3.5"/></svg>',
+  leaf:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20c8 0 14-6 14-15C9 5 4 11 4 20z"/></svg>',
+  lemon:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="12" rx="8" ry="6"/><path d="M4.5 8.5c3-2 12-2 15 0M4.5 15.5c3 2 12 2 15 0"/></svg>',
+  smoothie: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 4h10l-1.5 15a2 2 0 0 1-2 1.8h-3a2 2 0 0 1-2-1.8L7 4z"/><path d="M6 8h12"/></svg>',
+  matcha:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 9h14l-1.5 8a3 3 0 0 1-3 2.5h-5a3 3 0 0 1-3-2.5L5 9z"/><path d="M9 9c0-3 1-5.5 3-6.5"/></svg>',
+  fresh:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="13" r="7"/><path d="M12 6c0-2 1-3.5 2.5-4"/></svg>',
+  cocktail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16l-8 9v6M8 19h8"/></svg>',
+  bottle:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2h6M10 2v5l-3 4v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-9l-3-4V2"/></svg>',
+  soda:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M6 8l2-4h8l2 4"/></svg>',
+  beer:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 9h11v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9z"/><path d="M16 11h2a2 2 0 0 1 0 4h-2M8 9V5h6v4"/></svg>',
+  wine:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3h12c0 5-2 8-6 8s-6-3-6-8z"/><path d="M12 11v7M8 21h8"/></svg>',
+};
+</script>
+<script>/* Shared rendering: public guide and live admin preview. */
+(function(){
+'use strict';
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const normalize = s => String(s??'').toLowerCase().replace(/ё/g,'е').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim();
+const align = v => ['left','center','right'].includes(v)?v:'left';
+function classify(item){
+ const tags=(item.mood_tags||[]).map(normalize);
+ const non=tags.some(t=>['non alco','non alcohol','без алкоголя','безалкогольный','безалкогольное','0%'].includes(t));
+ const alco=tags.some(t=>['alco','alcohol','алко','алкоголь','алкогольный','алкогольное'].includes(t));
+ let frame=item.frame_mode||'auto';
+ if(frame==='auto') frame=non?'nonalco':alco?'alco':'';
+ let cold=item.serving_style||'auto';
+ if(cold==='auto') cold=tags.includes('ice')||tags.includes('со льдом')?'ice':tags.some(t=>['cold','холодный','холодное','лед'].includes(t))?'cold':'';
+ if(frame==='none') return {classes:'',flags:''};
+ const flags=[];
+ if(['alco','nonalco'].includes(frame)) flags.push(`<span class="drink-flag ${frame}">${frame==='alco'?'ALCO':'NON ALCO'}</span>`);
+ if(['ice','cold'].includes(cold)) flags.push(`<span class="drink-flag cold">${cold.toUpperCase()}</span>`);
+ return {classes:[['alco','nonalco'].includes(frame)?'drink-'+frame:'', ['ice','cold'].includes(cold)?'drink-cold':''].join(' '),flags:flags.length?`<div class="drink-flags">${flags.join('')}</div>`:''};
+}
+  function tagChip(t){
+    return `<button type="button" class="tag" data-tag="${esc(t)}">${esc(t)}</button>`;
+  }
+
+  function cardHTML(item, publicUrl = value=>value){
+    const visual = classify(item);
+    const tags = (item.mood_tags||[]).map(tagChip).join('');
+    const hasDetail = item.taste || item.aroma || item.aftertaste || item.presentation || item.who_for || item.fact || item.composition || item.pairing;
+    let detail = '';
+    if(hasDetail){
+      detail += `<details>`;
+      detail += `<summary>Подробнее</summary>`;
+      if(item.composition) detail += `<div class="detail-row"><span class="k">Состав</span>${esc(item.composition).replace(/\n/g,', ')}</div>`;
+      if(item.taste) detail += `<div class="detail-row"><span class="k">Вкус</span>${esc(item.taste)}</div>`;
+      if(item.aroma) detail += `<div class="detail-row"><span class="k">Аромат</span>${esc(item.aroma)}</div>`;
+      if(item.aftertaste) detail += `<div class="detail-row"><span class="k">Послевкусие</span>${esc(item.aftertaste)}</div>`;
+      if(item.who_for) detail += `<div class="detail-row"><span class="k">Кому рекомендовать</span>${esc(item.who_for)}</div>`;
+      if(item.fact) detail += `<div class="detail-row"><span class="k">Интересный факт</span>${esc(item.fact)}</div>`;
+      if(item.pairing) detail += `<div class="detail-row"><span class="k">Сочетание</span>${esc(item.pairing)}</div>`;
+      if(item.presentation) detail += `<div class="present">«${esc(item.presentation)}»</div>`;
+      detail += `</details>`;
+    }
+    const photo = item.image_url ? `<div class="card-photo-wrap" tabindex="0" role="button" aria-label="Открыть фото «${esc(item.name)}» на весь экран" data-caption="${esc(item.name)}"><img class="card-photo" loading="lazy" decoding="async" src="${esc(publicUrl(item.image_url))}" alt="${esc(item.name)}" onerror="this.closest('.card-photo-wrap').remove()"><span class="photo-zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span></div>` : '';
+    const searchBlob = [item.name,item.name_en,item.teaser,item.taste,item.aroma,item.aftertaste,item.composition,item.who_for,item.fact,item.presentation,(item.mood_tags||[]).join(' ')].join(' ').toLowerCase();
+    return `<div id="drink-${esc(item.id||'preview')}" class="card ${visual.classes}" data-align="${align(item.text_align)}" data-id="${esc(item.id||'')}" data-search="${esc(searchBlob)}" data-tags="${esc((item.mood_tags||[]).join('|').toLowerCase())}">
+      ${photo}
+      ${visual.flags}
+      <div class="card-top">
+        <div>
+          <h3>${esc(item.name)}</h3>
+          ${item.name_en?`<div class="eng">${esc(item.name_en)}</div>`:''}
+        </div>
+        ${item.price?`<div class="eng">${esc(item.price)}</div>`:''}
+      </div>
+      ${tags?`<div class="tags">${tags}</div>`:''}
+      ${item.teaser?`<p class="teaser">${esc(item.teaser)}</p>`:''}
+      ${detail}
+    </div>`;
+  }
+
+  function sectionHead(cat){
+    const icon = window.ICONS && window.ICONS[cat.icon] ? `<span class="icon" style="width:26px;height:26px;color:var(--gold)">${window.ICONS[cat.icon]}</span>` : '';
+    return `<div class="section-head" data-align="${align(cat.text_align)}">
+      <div>
+        <span class="section-num">${String(cat._num).padStart(2,'0')} / КАТЕГОРИЯ</span>
+        <h2>${icon}${esc(cat.title)}</h2>
+      </div>
+      ${cat.description?`<p class="section-desc">${esc(cat.description)}</p>`:''}
+    </div>`;
+  }
+
+
+function newsHTML(n,index=0){
+ const date=n.created_at?new Date(n.created_at):null;
+ const stamp=date&&!isNaN(date)?date.toLocaleDateString('ru-RU',{day:'numeric',month:'long'}):'';
+ return `<article class="lapsha-news-card ${n.pinned?'is-pinned':''}" data-align="${align(n.text_align)}"><div class="lapsha-news-meta"><span class="lapsha-news-index">${n.pinned?'Важное':'Новость '+String(index+1).padStart(2,'0')}</span><time class="lapsha-news-date">${esc(stamp)}</time></div>${n.title?`<h3 class="news-heading">${esc(n.title)}</h3>`:''}<p class="lapsha-news-message">${esc(n.message)}</p></article>`;
+}
+function renderNews(ticker,news){
+ ticker.innerHTML=''; ticker.className='news-ticker lapsha-news-v2';
+ if(!news.length){ticker.hidden=true;return;}
+ ticker.hidden=false;
+ const data=[...news].sort((a,b)=>Number(!!b.pinned)-Number(!!a.pinned));
+ ticker.innerHTML=`<div class="lapsha-news-shell"><div class="lapsha-news-head"><div><span class="lapsha-news-kicker">Для команды</span><h2 class="lapsha-news-title">Новости меню</h2><p class="lapsha-news-subtitle">Изменения и новинки · листайте влево и вправо</p></div><div class="lapsha-news-controls"><button type="button" class="lapsha-news-btn prev" aria-label="Предыдущая новость">←</button><button type="button" class="lapsha-news-btn next" aria-label="Следующая новость">→</button></div></div><div class="lapsha-news-viewport" tabindex="0" role="region" aria-label="Лента новостей"><div class="lapsha-news-track">${data.map(newsHTML).join('')}</div></div><div class="lapsha-news-count" aria-live="polite"></div></div>`;
+ const viewport=ticker.querySelector('.lapsha-news-viewport');
+ const cards=[...ticker.querySelectorAll('.lapsha-news-card')];
+ const prev=ticker.querySelector('.prev'),next=ticker.querySelector('.next');
+ const size=()=>cards[0].getBoundingClientRect().width+14;
+ const update=()=>{const index=Math.min(data.length,Math.round(viewport.scrollLeft/size())+1);ticker.querySelector('.lapsha-news-count').textContent=`${index} / ${data.length}`;prev.disabled=viewport.scrollLeft<2;next.disabled=viewport.scrollLeft+viewport.clientWidth>=viewport.scrollWidth-2;};
+ const step=d=>viewport.scrollBy({left:d*size(),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+ prev.onclick=()=>step(-1);next.onclick=()=>step(1);
+ viewport.onkeydown=e=>{if(['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();step(e.key==='ArrowLeft'?-1:1);}};
+ viewport.addEventListener('scroll',update,{passive:true});
+ let dragging=false,x=0,left=0;
+ viewport.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;dragging=true;x=e.clientX;left=viewport.scrollLeft;viewport.setPointerCapture(e.pointerId);viewport.classList.add('dragging');});
+ viewport.addEventListener('pointermove',e=>{if(dragging)viewport.scrollLeft=left-(e.clientX-x);});
+ const end=()=>{dragging=false;viewport.classList.remove('dragging');update();};
+ viewport.addEventListener('pointerup',end);viewport.addEventListener('pointercancel',end);
+ if(window.ResizeObserver){const observer=new ResizeObserver(update);observer.observe(viewport);}
+ requestAnimationFrame(update);
+}
+window.GuideUI={esc,normalize,align,classify,cardHTML,sectionHead,newsHTML,renderNews};
+})();
+</script>
+<script>(function(){
+  'use strict';
+
+  const sb = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+  const mainEl = document.getElementById('sections');
+  const tocEl = document.getElementById('toc');
+  const chipsEl = document.getElementById('chips');
+  const searchInput = document.getElementById('search');
+  const noResults = document.getElementById('noResults');
+  const filterBar = document.getElementById('filterBar');
+  const activeTagLabel = document.getElementById('activeTagLabel');
+  const clearFilterBtn = document.getElementById('clearFilter');
+
+  let activeTag = null;
+  let favoritesOnly=false;
+  let favorites=new Set();
+  try{const saved=JSON.parse(localStorage.getItem('lapsha-favorites-v3')||'[]');if(Array.isArray(saved))favorites=new Set(saved);}catch{}
+
+
+
+  function publicUrl(path){
+    if(!path) return '';
+    if(/^https?:\/\//.test(path)) return path;
+    const { data } = sb.storage.from(window.GUIDE_BUCKET).getPublicUrl(path);
+    return data ? data.publicUrl : '';
+  }
+
+  async function loadSettings(){
+    const { data } = await sb.from('settings').select('*').eq('id',1).single();
+    if(!data) return;
+    const root = document.documentElement.style;
+    root.setProperty('--bg', data.color_bg);
+    root.setProperty('--surface', data.color_surface);
+    root.setProperty('--gold', data.color_gold);
+    root.setProperty('--gold-bright', data.color_gold_bright);
+    root.setProperty('--text', data.color_text);
+    root.setProperty('--text-muted', data.color_text_muted);
+    if(data.font_heading) root.setProperty('--font-head', `'${data.font_heading}', serif`);
+    if(data.font_body) root.setProperty('--font-body', `'${data.font_body}', sans-serif`);
+
+    document.title = data.site_title || 'Гид по барному меню';
+    document.getElementById('heroEyebrow').textContent = data.hero_eyebrow || '';
+    document.getElementById('heroTitle').innerHTML = esc(data.hero_title || '').replace(/&lt;(\/?em)&gt;/g,'<$1>');
+    document.getElementById('heroSubtitle').textContent = data.hero_subtitle || '';
+    document.getElementById('heroQuote').textContent = data.hero_quote ? `«${data.hero_quote}»` : '';
+
+    const brand = document.getElementById('navBrand');
+    const logoBox = document.getElementById('heroLogo');
+    if(data.logo_url){
+      const url = publicUrl(data.logo_url);
+      brand.innerHTML = `<img src="${esc(url)}" alt="Логотип">${esc(data.site_title||'')}`;
+      logoBox.innerHTML = `<img class="hero-logo" src="${esc(url)}" alt="${esc(data.site_title||'Логотип')}">`;
+    } else {
+      brand.innerHTML = `<span class="ring"></span>${esc(data.site_title||'Гид')}`;
+      logoBox.innerHTML = `<div class="hero-logo placeholder">${esc(data.site_title||'ГИД')}</div>`;
+    }
+    if(data.favicon_url){
+      let link = document.querySelector("link[rel~='icon']");
+      if(!link){ link = document.createElement('link'); link.rel='icon'; document.head.appendChild(link); }
+      link.href = publicUrl(data.favicon_url);
+    }
+  }
+
+  async function loadNews(){
+    const {data,error}=await sb.from('news').select('*').eq('published',true).order('sort_order').order('created_at',{ascending:false});
+    if(error) throw error;
+    window.GuideUI.renderNews(document.getElementById('newsTicker'),data||[]);
+  }
+
+  const {cardHTML: renderCard, sectionHead, normalize, esc} = window.GuideUI;
+  const cardHTML = item=>renderCard(item,publicUrl);
+  function tipHTML(tip){
+    if(!tip) return '';
+    return `<div class="staff-tip"><span class="lbl">Совет официанту</span>${esc(tip)}</div>`;
+  }
+
+  async function loadContent(){
+    const responses = await Promise.all([
+      sb.from('categories').select('*').eq('published',true).order('sort_order'),
+      sb.from('item_groups').select('*').order('sort_order'),
+      sb.from('items').select('*').eq('published',true).order('sort_order'),
+    ]);
+    const failure=responses.find(r=>r.error); if(failure) throw failure.error;
+    const [cats,groups,items]=responses.map(r=>r.data||[]);
+
+    const groupsByCat = {};
+    (groups||[]).forEach(g=>{ (groupsByCat[g.category_id] ||= []).push(g); });
+    const itemsByCat = {};
+    (items||[]).forEach(it=>{ (itemsByCat[it.category_id] ||= []).push(it); });
+
+    mainEl.innerHTML = '';
+    tocEl.innerHTML = '';
+    chipsEl.innerHTML = `<button class="chip active" data-target="top">Все</button>`;
+
+    cats.forEach((cat, idx)=>{
+      cat._num = idx+1;
+      const sec = document.createElement('section');
+      sec.className = 'section';
+      sec.id = cat.slug;
+      sec.dataset.cat = cat.slug;
+
+      const catGroups = groupsByCat[cat.id] || [];
+      const catItems = itemsByCat[cat.id] || [];
+
+      let body = sectionHead(cat) + tipHTML(cat.staff_tip);
+
+      if(catGroups.length){
+        catGroups.forEach(g=>{
+          const gi = catItems.filter(it=>it.group_id===g.id);
+          if(!gi.length) return;
+          body += `<div class="spirit-group"><h4>${esc(g.title)}</h4>${g.description?`<p class="group-desc">${esc(g.description)}</p>`:''}<div class="grid">${gi.map(cardHTML).join('')}</div></div>`;
+        });
+        const ungrouped = catItems.filter(it=>!catGroups.some(g=>g.id===it.group_id));
+        if(ungrouped.length) body += `<div class="grid">${ungrouped.map(cardHTML).join('')}</div>`;
+      } else {
+        body += catItems.length ? `<div class="grid">${catItems.map(cardHTML).join('')}</div>`
+                                 : `<p style="color:var(--text-faint);font-size:14px;">Раздел пока пуст — добавьте напитки в админ-панели.</p>`;
+      }
+
+      sec.innerHTML = body;
+      mainEl.appendChild(sec);
+
+      tocEl.innerHTML += `<a href="#${cat.slug}"><span class="ring"></span>${esc(cat.title)}</a>`;
+      chipsEl.innerHTML += `<button class="chip" data-target="${cat.slug}">${esc(cat.title)}</button>`;
+    });
+
+    initInteractions();
+    document.dispatchEvent(new Event('guide:ready'));
+  }
+
+  function initInteractions(){
+    // ---- chip navigation ----
+    chipsEl.addEventListener('click', e=>{
+      const btn = e.target.closest('.chip');
+      if(!btn) return;
+      const target = btn.dataset.target;
+      if(target === 'top'){ document.getElementById('top').scrollIntoView({behavior:'smooth'}); }
+      else { document.getElementById(target).scrollIntoView({behavior:'smooth'}); }
+    });
+
+    // ---- scroll-spy ----
+    const sections = Array.from(document.querySelectorAll('.section'));
+    const chipButtons = Array.from(chipsEl.querySelectorAll('.chip'));
+    const spy = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          const slug = entry.target.dataset.cat;
+          chipButtons.forEach(c=>c.classList.toggle('active', c.dataset.target===slug));
+        }
+      });
+    }, { rootMargin:'-40% 0px -55% 0px', threshold:0 });
+    sections.forEach(s=>spy.observe(s));
+
+    // ---- clickable tag filters ----
+    mainEl.addEventListener('click', e=>{
+      const tagEl = e.target.closest('.tag[data-tag]');
+      if(!tagEl) return;
+      const tag = tagEl.dataset.tag;
+      activeTag = (activeTag === tag) ? null : tag;
+      applyFilters();
+    });
+    clearFilterBtn.addEventListener('click', ()=>{ activeTag = null; applyFilters(); });
+
+    // ---- search ----
+    searchInput.addEventListener('input', e=> applyFilters(e.target.value));
+
+    initLightbox();
+    initScrollReveal();
+    initBackToTop();
+  }
+
+  // ---------- LIGHTBOX ----------
+  function initLightbox(){
+    const lightbox = document.getElementById('lightbox');
+    const imgEl = document.getElementById('lightboxImg');
+    const captionEl = document.getElementById('lightboxCaption');
+    const countEl = document.getElementById('lightboxCount');
+    const closeBtn = document.getElementById('lightboxClose');
+    const prevBtn = document.getElementById('lightboxPrev');
+    const nextBtn = document.getElementById('lightboxNext');
+    let items = [];
+    let idx = -1;
+    let lastFocused = null;
+
+    function collect(){
+      // only include photos that are currently visible (respects active search/tag filters)
+      items = Array.from(document.querySelectorAll('.card-photo-wrap')).filter(w => w.offsetParent !== null);
+    }
+
+    function openAt(i){
+      collect();
+      if(!items.length) return;
+      idx = (i + items.length) % items.length;
+      const wrap = items[idx];
+      const img = wrap.querySelector('img');
+      if(!img) return;
+      imgEl.src = img.src;
+      imgEl.alt = img.alt || '';
+      captionEl.textContent = wrap.dataset.caption || img.alt || '';
+      const multi = items.length > 1;
+      prevBtn.style.display = multi ? 'flex' : 'none';
+      nextBtn.style.display = multi ? 'flex' : 'none';
+      countEl.textContent = multi ? `${idx+1} / ${items.length}` : '';
+      lastFocused = document.activeElement;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function close(){
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+      imgEl.src = '';
+      if(lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    mainEl.addEventListener('click', e=>{
+      const wrap = e.target.closest('.card-photo-wrap');
+      if(!wrap) return;
+      collect();
+      openAt(items.indexOf(wrap));
+    });
+    mainEl.addEventListener('keydown', e=>{
+      if(e.key !== 'Enter' && e.key !== ' ') return;
+      const wrap = e.target.closest('.card-photo-wrap');
+      if(!wrap) return;
+      e.preventDefault();
+      collect();
+      openAt(items.indexOf(wrap));
+    });
+
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', ()=> openAt(idx - 1));
+    nextBtn.addEventListener('click', ()=> openAt(idx + 1));
+    lightbox.addEventListener('click', e=>{ if(e.target === lightbox) close(); });
+
+    document.addEventListener('keydown', e=>{
+      if(!lightbox.classList.contains('open')) return;
+      if(e.key === 'Escape') close();
+      else if(e.key === 'ArrowLeft') openAt(idx - 1);
+      else if(e.key === 'ArrowRight') openAt(idx + 1);
+    });
+
+    // basic touch swipe
+    let touchStartX = null;
+    lightbox.addEventListener('touchstart', e=>{ touchStartX = e.changedTouches[0].clientX; }, {passive:true});
+    lightbox.addEventListener('touchend', e=>{
+      if(touchStartX==null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if(Math.abs(dx) > 50) openAt(dx > 0 ? idx - 1 : idx + 1);
+      touchStartX = null;
+    }, {passive:true});
+  }
+
+  // ---------- SCROLL REVEAL ----------
+  function initScrollReveal(){
+    const targets = document.querySelectorAll('.card, .spirit-group, .section-head, .staff-tip');
+    if(!('IntersectionObserver' in window)){
+      targets.forEach(t=>t.classList.add('in-view'));
+      return;
+    }
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.08, rootMargin:'0px 0px -60px 0px' });
+    targets.forEach(t=>io.observe(t));
+  }
+
+  // ---------- BACK TO TOP ----------
+  function initBackToTop(){
+    const btn = document.getElementById('backToTop');
+    if(!btn) return;
+    window.addEventListener('scroll', ()=>{
+      btn.classList.toggle('show', window.scrollY > 500);
+    }, {passive:true});
+    btn.addEventListener('click', ()=>{
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  }
+
+  function applyFilters(query){
+    const q = normalize(query!==undefined ? query : searchInput.value);
+
+    if(activeTag){
+      filterBar.classList.add('show');
+      activeTagLabel.textContent = activeTag;
+    } else {
+      filterBar.classList.remove('show');
+    }
+
+    let anyVisible = false;
+    document.querySelectorAll('.section').forEach(sec=>{
+      let sectionHasMatch = false;
+      const cards = sec.querySelectorAll('.card[data-search]');
+      cards.forEach(card=>{
+        const hay = normalize((card.dataset.search || '')+' '+sec.querySelector('.section-head').textContent+' '+(card.closest('.spirit-group')?.querySelector('h4')?.textContent||''));
+        const tags = (card.dataset.tags || '').split('|');
+        const matchesQuery = !q || q.split(' ').every(word=>hay.includes(word));
+        const matchesTag = !activeTag || tags.includes(activeTag.toLowerCase());
+        const match = matchesQuery && matchesTag && (!favoritesOnly||favorites.has(card.dataset.id));
+        card.style.display = match ? '' : 'none';
+        if(match) sectionHasMatch = true;
+      });
+      sec.querySelectorAll('.spirit-group').forEach(group=>{group.style.display=[...group.querySelectorAll('.card')].some(c=>c.style.display!=='none')?'':'none';});
+      // sections without cards (spirit lists use plain text, always considered visible unless filtering)
+      if(!q && !activeTag && !favoritesOnly){ sec.style.display=''; sectionHasMatch = true; }
+      else sec.style.display = sectionHasMatch ? '' : 'none';
+      if(sectionHasMatch) anyVisible = true;
+    });
+    noResults.style.display = ((q||activeTag||favoritesOnly) && !anyVisible) ? 'block' : 'none';
+  }
+
+  document.querySelectorAll('.tag').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.tag').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+
+  document.addEventListener('guide:reset',()=>{activeTag=null;favoritesOnly=false;searchInput.value='';applyFilters();document.getElementById('favoritesOnly')?.setAttribute('aria-pressed','false');});
+  document.addEventListener('guide:favorites',e=>{favorites=new Set(e.detail.ids);favoritesOnly=e.detail.only;applyFilters();});
+  (async function init(){
+    mainEl.textContent='Загружаем меню…';
+    try { await loadSettings(); await loadContent(); }
+    catch(error){mainEl.innerHTML='<p class="load-error">Не удалось загрузить меню. Проверьте подключение и <a href="">обновите страницу</a>.</p>';console.error(error);}
+    try { await loadNews(); } catch(error){console.warn('Новости недоступны',error);}
+  })();
+})();
+</script>
+<script>(function(){'use strict';const {normalize}=window.GuideUI;
+  const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>';
+  const CLOSE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
+  const LEFT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"></path></svg>';
+  const RIGHT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"></path></svg>';
+
+  function createQuickFind(){
+    if(document.querySelector('.quick-find-fab')) return;
+
+    const fab = document.createElement('button');
+    fab.type = 'button';
+    fab.className = 'quick-find-fab';
+    fab.setAttribute('aria-label','Быстрый поиск напитка');
+    fab.setAttribute('title','Быстрый поиск');
+    fab.innerHTML = SEARCH_ICON;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'quick-find-overlay';
+    overlay.setAttribute('role','dialog');
+    overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','Быстрый поиск');
+    overlay.innerHTML = `
+      <div class="quick-find-panel">
+        <div class="quick-find-head">
+          <div class="quick-find-input-wrap">
+            ${SEARCH_ICON}
+            <input class="quick-find-input" type="search" autocomplete="off" placeholder="Например: эспрессо, маракуйя, виски…">
+          </div>
+          <button class="quick-find-close" type="button" aria-label="Закрыть">${CLOSE_ICON}</button>
+        </div>
+        <div class="quick-find-results"></div>
+      </div>`;
+
+    document.body.append(fab,overlay);
+    const input = overlay.querySelector('.quick-find-input');
+    const results = overlay.querySelector('.quick-find-results');
+    let previousFocus = null;
+
+    function entries(){
+      const out = [];
+      document.querySelectorAll('.section').forEach(sec=>{
+        const catName = sec.querySelector('.section-head h2')?.textContent?.trim() || '';
+        if(catName){
+          out.push({
+            type:'category',
+            name:catName,
+            meta:sec.querySelector('.section-desc')?.textContent?.trim() || 'Категория',
+            hay:normalize(catName + ' ' + (sec.querySelector('.section-desc')?.textContent || '')),
+            target:sec
+          });
+        }
+        sec.querySelectorAll('.card[data-search]').forEach(card=>{
+          const name = card.querySelector('h3')?.textContent?.trim() || 'Напиток';
+          const group = card.closest('.spirit-group')?.querySelector('h4')?.textContent?.trim() || '';
+          const price = card.querySelector('.card-top > .eng')?.textContent?.trim() || '';
+          out.push({
+            type:'drink',
+            name,
+            meta:[catName,group,price].filter(Boolean).join(' · '),
+            hay:normalize((card.dataset.search || '') + ' ' + name + ' ' + catName + ' ' + group),
+            target:card
+          });
+        });
+      });
+      return out;
+    }
+
+    function render(){
+      const q = normalize(input.value);
+      const all = entries();
+      let found = q ? all.filter(x=>q.split(' ').every(word=>x.hay.includes(word))) : all.filter(x=>x.type==='drink');
+      const total=found.length;
+      found = found.slice(0,100);
+      results.innerHTML = '';
+
+      if(!found.length){
+        const empty = document.createElement('div');
+        empty.className = 'quick-find-empty';
+        empty.textContent = 'Ничего не найдено. Попробуйте название, вкус, состав или категорию.';
+        results.appendChild(empty);
+        return;
+      }
+
+      const count=document.createElement('p'); count.className='quick-find-empty';count.textContent=total>100?`Первые 100 из ${total}. Уточните запрос.`:`Найдено: ${total}`;results.append(count);
+      found.forEach(item=>{
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'quick-find-result';
+
+        const icon = document.createElement('span');
+        icon.className = 'quick-find-icon';
+        icon.textContent = item.type === 'category' ? '§' : (item.name.charAt(0).toUpperCase() || '•');
+        const text = document.createElement('span');
+        const name = document.createElement('span');
+        name.className = 'quick-find-name';
+        name.textContent = item.name;
+        const meta = document.createElement('span');
+        meta.className = 'quick-find-meta';
+        meta.textContent = item.meta || (item.type === 'category' ? 'Категория' : 'Напиток');
+        text.append(name,meta);
+        const go = document.createElement('span');
+        go.className = 'quick-find-go';
+        go.textContent = 'ОТКРЫТЬ →';
+        btn.append(icon,text,go);
+        btn.addEventListener('click',()=>goTo(item));
+        results.appendChild(btn);
+      });
+    }
+
+    function goTo(item){
+      close();
+      document.dispatchEvent(new Event('guide:reset'));
+      const target = item.target;
+      if(!target || !target.isConnected) return;
+      target.classList.add('in-view');
+      const group=target.closest('.spirit-group'); if(group)group.classList.add('in-view');
+      target.scrollIntoView({behavior:'smooth',block:'center'});
+      if(item.type === 'drink'){
+        const details = target.querySelector('details');
+        if(details) details.open = true;
+        target.classList.remove('quick-find-hit');
+        void target.offsetWidth;
+        target.classList.add('quick-find-hit');
+        setTimeout(()=>target.classList.remove('quick-find-hit'),1800);
+      }
+    }
+
+    function open(){
+      if(overlay.classList.contains('open')) return;
+      previousFocus = document.activeElement;
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      input.value = '';
+      render();
+      setTimeout(()=>input.focus(),60);
+    }
+
+    function close(){
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if(previousFocus && previousFocus.focus) previousFocus.focus();
+    }
+
+    fab.addEventListener('click',open);
+    overlay.querySelector('.quick-find-close').addEventListener('click',close);
+    overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+    input.addEventListener('input',render);
+    overlay.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const els=[...overlay.querySelectorAll('input,button')];const first=els[0],last=els[els.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}});
+    input.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){
+        const first = results.querySelector('.quick-find-result');
+        if(first) first.click();
+      }
+    });
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape' && overlay.classList.contains('open')) close();
+      if((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k'){
+        e.preventDefault();
+        open();
+      }
+    });
+  }
+
+createQuickFind();
+ document.addEventListener('guide:ready',()=>{
+  const cards=[...document.querySelectorAll('#sections .card')];
+  let saved=new Set();try{const data=JSON.parse(localStorage.getItem('lapsha-favorites-v3')||'[]');if(Array.isArray(data))saved=new Set(data);}catch{}
+  let only=false;
+  const bar=document.createElement('div');bar.className='menu-tools';
+  bar.innerHTML='<button id="favoritesOnly" type="button" aria-pressed="false">Избранное</button><button id="expandAll" type="button">Раскрыть подробности</button><button id="collapseAll" type="button">Свернуть подробности</button><span id="favoriteCount" role="status"></span>';
+  document.getElementById('sections').before(bar);
+  const notify=()=>{document.dispatchEvent(new CustomEvent('guide:favorites',{detail:{ids:[...saved],only}}));bar.querySelector('#favoriteCount').textContent=`В избранном: ${cards.filter(c=>saved.has(c.dataset.id)).length}`;};
+  cards.forEach(card=>{const button=document.createElement('button');button.type='button';button.className='favorite-toggle';const paint=()=>{const on=saved.has(card.dataset.id);button.textContent=on?'★ В избранном':'☆ В избранное';button.setAttribute('aria-pressed',String(on));};paint();button.onclick=()=>{saved.has(card.dataset.id)?saved.delete(card.dataset.id):saved.add(card.dataset.id);paint();try{localStorage.setItem('lapsha-favorites-v3',JSON.stringify([...saved]));}catch{}notify();};card.append(button);});
+  bar.querySelector('#favoritesOnly').onclick=e=>{only=!only;e.currentTarget.setAttribute('aria-pressed',String(only));notify();};
+  bar.querySelector('#expandAll').onclick=()=>cards.filter(c=>c.style.display!=='none').forEach(c=>{const d=c.querySelector('details');if(d)d.open=true;});
+  bar.querySelector('#collapseAll').onclick=()=>cards.forEach(c=>{const d=c.querySelector('details');if(d)d.open=false;});
+  document.addEventListener('guide:reset',()=>{only=false;bar.querySelector('#favoritesOnly').setAttribute('aria-pressed','false');});
+  notify();
+ });
+})();</script>
 </body>
 </html>

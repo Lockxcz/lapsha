@@ -207,12 +207,14 @@
     $('cat_title').value = cat ? cat.title : '';
     $('cat_slug').value = cat ? cat.slug : '';
     $('cat_icon').value = cat ? cat.icon : 'coffee';
+    $('cat_text_align').value=cat?.text_align||'left';
     $('cat_description').value = cat ? cat.description||'' : '';
     $('cat_staff_tip').value = cat ? cat.staff_tip||'' : '';
     $('cat_sort_order').value = cat ? cat.sort_order : 0;
     $('cat_published').checked = cat ? cat.published : true;
     $('deleteCategoryBtn').style.display = cat ? 'inline-flex' : 'none';
     $('categoryModal').classList.add('show');
+    renderPreviews();
   }
 
   $('addCategoryBtn').addEventListener('click', ()=> openCategoryModal(null, []));
@@ -223,6 +225,7 @@
       title: $('cat_title').value.trim(),
       slug: $('cat_slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'-'),
       icon: $('cat_icon').value,
+      text_align: $('cat_text_align').value,
       description: $('cat_description').value.trim(),
       staff_tip: $('cat_staff_tip').value.trim(),
       sort_order: parseInt($('cat_sort_order').value||'0',10),
@@ -232,7 +235,7 @@
     const { error } = id
       ? await sb.from('categories').update(payload).eq('id', id)
       : await sb.from('categories').insert(payload);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория сохранена');
     loadCategoriesView();
@@ -243,7 +246,7 @@
     if(!id) return;
     if(!confirm('Удалить категорию и все её напитки? Это действие нельзя отменить.')) return;
     const { error } = await sb.from('categories').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('categoryModal').classList.remove('show');
     toast('Категория удалена');
     loadCategoriesView();
@@ -253,10 +256,10 @@
     const opts = cats.map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('');
     $('it_category_id').innerHTML = opts;
     $('itemsCategorySelect').innerHTML = opts;
-    $('it_category_id').addEventListener('change', ()=> populateGroupSelect($('it_category_id').value));
+    $('it_category_id').onchange=()=>populateGroupSelect($('it_category_id').value);
     if(cats.length){
       populateGroupSelect(cats[0].id);
-      $('itemsCategorySelect').addEventListener('change', loadItemsTable);
+      $('itemsCategorySelect').onchange=loadItemsTable;
       loadItemsTable();
     }
   }
@@ -300,6 +303,9 @@
 
   function openItemModal(item){
     $('itemModalTitle').textContent = item ? 'Изменить напиток' : 'Новый напиток';
+    $('it_frame_mode').value=item?.frame_mode||'auto';
+    $('it_serving_style').value=item?.serving_style||'auto';
+    $('it_text_align').value=item?.text_align||'left';
     $('it_id').value = item ? item.id : '';
     $('it_name').value = item ? item.name : '';
     $('it_name_en').value = item ? item.name_en||'' : '';
@@ -324,6 +330,7 @@
     });
     $('deleteItemBtn').style.display = item ? 'inline-flex' : 'none';
     $('itemModal').classList.add('show');
+    renderPreviews();
   }
 
   $('addItemBtn').addEventListener('click', ()=>{
@@ -358,6 +365,9 @@
       presentation: $('it_presentation').value.trim(),
       fact: $('it_fact').value.trim(),
       pairing: $('it_pairing').value.trim(),
+      frame_mode: $('it_frame_mode').value,
+      serving_style: $('it_serving_style').value,
+      text_align: $('it_text_align').value,
       mood_tags: moodTags,
       price: $('it_price').value.trim(),
       image_url: currentItemPhotoPath,
@@ -368,7 +378,7 @@
     const { error } = id
       ? await sb.from('items').update(payload).eq('id', id)
       : await sb.from('items').insert(payload);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток сохранён');
     loadItemsTable();
@@ -379,7 +389,7 @@
     if(!id) return;
     if(!confirm('Удалить этот напиток?')) return;
     const { error } = await sb.from('items').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('itemModal').classList.remove('show');
     toast('Напиток удалён');
     loadItemsTable();
@@ -394,7 +404,7 @@
     tbody.innerHTML = (data||[]).map(n=>`
       <tr>
         <td>${n.sort_order}</td>
-        <td>${esc(n.message)}</td>
+        <td>${n.pinned?'📌 ':''}${n.title?`<strong>${esc(n.title)}</strong><br>`:''}${esc(n.message)}</td>
         <td><span class="badge ${n.published?'on':'off'}">${n.published?'Виден':'Скрыт'}</span></td>
         <td class="actions"><button class="btn small secondary" data-edit-news="${n.id}">Изменить</button></td>
       </tr>`).join('') || `<tr><td colspan="4" style="color:var(--text-muted)">Пока нет новостей.</td></tr>`;
@@ -405,12 +415,16 @@
 
   function openNewsModal(item){
     $('newsModalTitle').textContent = item ? 'Изменить новость' : 'Новая новость';
+    $('news_title').value=item?.title||'';
+    $('news_text_align').value=item?.text_align||'left';
+    $('news_pinned').checked=!!item?.pinned;
     $('news_id').value = item ? item.id : '';
     $('news_message').value = item ? item.message : '';
     $('news_sort_order').value = item ? item.sort_order : 0;
     $('news_published').checked = item ? item.published : true;
     $('deleteNewsBtn').style.display = item ? 'inline-flex' : 'none';
     $('newsModal').classList.add('show');
+    renderPreviews();
   }
 
   $('addNewsBtn').addEventListener('click', ()=> openNewsModal(null));
@@ -418,6 +432,9 @@
   $('saveNewsBtn').addEventListener('click', async ()=>{
     const id = $('news_id').value;
     const payload = {
+      title: $('news_title').value.trim(),
+      text_align: $('news_text_align').value,
+      pinned: $('news_pinned').checked,
       message: $('news_message').value.trim(),
       sort_order: parseInt($('news_sort_order').value||'0',10),
       published: $('news_published').checked,
@@ -426,7 +443,7 @@
     const { error } = id
       ? await sb.from('news').update(payload).eq('id', id)
       : await sb.from('news').insert(payload);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость сохранена');
     loadNewsTable();
@@ -437,7 +454,7 @@
     if(!id) return;
     if(!confirm('Удалить эту новость?')) return;
     const { error } = await sb.from('news').delete().eq('id', id);
-    if(error){ toast('Ошибка: '+error.message, true); return; }
+    if(error){ toast('Ошибка: '+error.message+' Если поле не найдено, выполните update-v3.sql в Supabase.', true); return; }
     $('newsModal').classList.remove('show');
     toast('Новость удалена');
     loadNewsTable();
@@ -546,6 +563,22 @@
     toast(`Импорт завершён: добавлено ${ok} из ${rows.length}`);
     loadItemsTable();
   });
+
+
+  function renderPreviews(){
+    const ui=window.GuideUI;
+    const item={};
+    ['name','name_en','teaser','composition','taste','aroma','aftertaste','who_for','presentation','fact','pairing','price','text_align','frame_mode','serving_style'].forEach(k=>item[k]=$('it_'+k).value);
+    item.mood_tags=$('it_mood_tags').value.split(',').map(s=>s.trim()).filter(Boolean);
+    item.image_url=$('itemPhotoPreview').getAttribute('src')||'';
+    $('it_preview').innerHTML=ui.cardHTML(item);
+    $('cat_preview').innerHTML=ui.sectionHead({_num:1,title:$('cat_title').value,description:$('cat_description').value,text_align:$('cat_text_align').value});
+    $('news_preview').innerHTML=ui.newsHTML({title:$('news_title').value,message:$('news_message').value,text_align:$('news_text_align').value,pinned:$('news_pinned').checked});
+  }
+  ['categoryModal','itemModal','newsModal'].forEach(id=>{ $(id).addEventListener('input',renderPreviews);$(id).addEventListener('change',renderPreviews); });
+  new MutationObserver(renderPreviews).observe($('itemPhotoPreview'),{attributes:true,attributeFilter:['src']});
+  $('duplicateItemBtn').onclick=()=>{ $('it_id').value='';$('it_name').value=($('it_name').value||'Напиток')+' — копия';$('it_published').checked=false;$('deleteItemBtn').style.display='none';$('itemModalTitle').textContent='Копия · новый черновик';renderPreviews();toast('Копия подготовлена. Нажмите «Сохранить», чтобы добавить её.'); };
+  document.querySelectorAll('.field').forEach(field=>{const label=field.querySelector('label'),input=field.querySelector('input,textarea,select');if(label&&input?.id)label.htmlFor=input.id;});
 
   checkSession();
 })();

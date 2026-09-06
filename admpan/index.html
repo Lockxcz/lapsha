@@ -6,7 +6,11 @@
 <title>Админ-панель · Гид</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/lapsha-update-v2.css">
+<link rel="stylesheet" href="../assets/guide-v3.css">
 <link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="admin-v3.css">
 </head>
 <body>
 
@@ -48,7 +52,7 @@
     <!-- SETTINGS VIEW -->
     <div id="view-settings">
       <h2>Общие настройки</h2>
-      <div class="sub">Логотип, тексты шапки и цвета оформления. Изменения сразу появляются на сайте.</div>
+      <div class="sub">Логотип, тексты шапки и цвета оформления. После сохранения обновите открытую страницу сайта.</div>
 
       <div class="panel">
         <h3>Бренд</h3>
@@ -91,7 +95,7 @@
       <h2>Категории</h2>
       <div class="sub">Разделы меню (Кофе, Чаи, Коктейли и т.д.). Порядок влияет на расположение на сайте.</div>
       <button class="btn" id="addCategoryBtn" style="margin-bottom:18px;">+ Добавить категорию</button>
-      <div class="panel">
+      <div class="panel table-panel">
         <table>
           <thead><tr><th>#</th><th>Название</th><th>Ярлык (slug)</th><th>Показ</th><th></th></tr></thead>
           <tbody id="categoriesTable"></tbody>
@@ -107,7 +111,7 @@
         <select id="itemsCategorySelect"></select>
       </div>
       <button class="btn" id="addItemBtn" style="margin:16px 0;">+ Добавить напиток</button>
-      <div class="panel">
+      <div class="panel table-panel">
         <table>
           <thead><tr><th>Фото</th><th>Название</th><th>Группа</th><th>Показ</th><th></th></tr></thead>
           <tbody id="itemsTable"></tbody>
@@ -118,9 +122,9 @@
     <!-- NEWS VIEW -->
     <div id="view-news" style="display:none">
       <h2>Новости</h2>
-      <div class="sub">Короткие строки обновлений (например «Изменили состав лимонада»). Они бегущей строкой показываются на сайте над блоком «О гиде»; посетитель может пролистать их вручную.</div>
+      <div class="sub">Крупные карточки со свайпом. Важные новости можно закрепить; неопубликованные остаются черновиками.</div>
       <button class="btn" id="addNewsBtn" style="margin-bottom:18px;">+ Добавить новость</button>
-      <div class="panel">
+      <div class="panel table-panel">
         <table>
           <thead><tr><th>#</th><th>Текст</th><th>Показ</th><th></th></tr></thead>
           <tbody id="newsTable"></tbody>
@@ -139,7 +143,7 @@
         </div>
         <div class="field">
           <label>...или вставьте JSON сюда</label>
-          <textarea id="importJson" rows="8" placeholder='{"items":[{"category_slug":"coffee","name":"Эспрессо", "teaser":"...", "taste":"...", ...}]}'></textarea>
+          <textarea lang="ru" spellcheck="true" id="importJson" rows="8" placeholder='{"items":[{"category_slug":"coffee","name":"Эспрессо", "teaser":"...", "taste":"...", ...}]}'></textarea>
         </div>
         <button class="btn" id="runImportBtn">Импортировать</button>
         <span class="ok-msg" id="importOk" style="margin-left:12px;"></span>
@@ -167,8 +171,9 @@
         <option value="beer">Пиво</option><option value="wine">Вино</option>
       </select>
     </div>
-    <div class="field"><label>Краткое описание раздела (необязательно)</label><textarea id="cat_description"></textarea></div>
-    <div class="field"><label>Совет официанту (необязательно)</label><textarea id="cat_staff_tip"></textarea></div>
+    <div class="field"><label>Краткое описание раздела (необязательно)</label><textarea lang="ru" spellcheck="true" id="cat_description"></textarea></div>
+    <div class="field"><label for="cat_text_align">Выравнивание заголовка и описания</label><select id="cat_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="preview-label">Предпросмотр категории</div><div class="live-preview" id="cat_preview"></div>
+<div class="field"><label>Совет официанту (необязательно)</label><textarea lang="ru" spellcheck="true" id="cat_staff_tip"></textarea></div>
     <div class="field"><label>Порядок (число, меньше — выше)</label><input type="number" id="cat_sort_order" value="0"></div>
     <div class="field"><label><input type="checkbox" id="cat_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
     <div class="modal-actions">
@@ -194,24 +199,24 @@
         <input type="file" id="itemPhotoFile" accept="image/*">
       </div>
     </div>
-    <div class="field"><label>Короткое описание (в карточке)</label><textarea id="it_teaser"></textarea></div>
-    <div class="field"><label>Состав (каждый пункт с новой строки)</label><textarea id="it_composition"></textarea></div>
+    <div class="field"><label for="it_frame_mode">Рамка вокруг фото и текста</label><select id="it_frame_mode"><option value="auto">По тегам</option><option value="none">Без цветной рамки и меток</option><option value="alco">ALCO — красная</option><option value="nonalco">NON ALCO — синяя</option></select></div><div class="field"><label for="it_serving_style">Подача</label><select id="it_serving_style"><option value="auto">По тегам</option><option value="none">Не указывать</option><option value="ice">ICE — со льдом</option><option value="cold">COLD — холодный</option></select></div><div class="field"><label for="it_text_align">Выравнивание текста</label><select id="it_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="field"><label>Короткое описание (в карточке)</label><textarea lang="ru" spellcheck="true" id="it_teaser"></textarea></div>
+    <div class="field"><label>Состав (каждый пункт с новой строки)</label><textarea lang="ru" spellcheck="true" id="it_composition"></textarea></div>
     <div class="row2">
-      <div class="field"><label>Вкус</label><textarea id="it_taste"></textarea></div>
-      <div class="field"><label>Аромат</label><textarea id="it_aroma"></textarea></div>
+      <div class="field"><label>Вкус</label><textarea lang="ru" spellcheck="true" id="it_taste"></textarea></div>
+      <div class="field"><label>Аромат</label><textarea lang="ru" spellcheck="true" id="it_aroma"></textarea></div>
     </div>
     <div class="row2">
-      <div class="field"><label>Послевкусие</label><textarea id="it_aftertaste"></textarea></div>
-      <div class="field"><label>Кому рекомендовать</label><textarea id="it_who_for"></textarea></div>
+      <div class="field"><label>Послевкусие</label><textarea lang="ru" spellcheck="true" id="it_aftertaste"></textarea></div>
+      <div class="field"><label>Кому рекомендовать</label><textarea lang="ru" spellcheck="true" id="it_who_for"></textarea></div>
     </div>
-    <div class="field"><label>Как презентовать гостю</label><textarea id="it_presentation"></textarea></div>
+    <div class="field"><label>Как презентовать гостю</label><textarea lang="ru" spellcheck="true" id="it_presentation"></textarea></div>
     <div class="row2">
-      <div class="field"><label>Интересный факт (необязательно)</label><textarea id="it_fact"></textarea></div>
-      <div class="field"><label>Сочетание с блюдами (для вин, необязательно)</label><textarea id="it_pairing"></textarea></div>
+      <div class="field"><label>Интересный факт (необязательно)</label><textarea lang="ru" spellcheck="true" id="it_fact"></textarea></div>
+      <div class="field"><label>Сочетание с блюдами (для вин, необязательно)</label><textarea lang="ru" spellcheck="true" id="it_pairing"></textarea></div>
     </div>
     <div class="field">
       <label>Теги-настроение (через запятую, напр.: Освежающий, Крепкий)</label>
-      <input id="it_mood_tags">
+      <input id="it_mood_tags" placeholder="Освежающий, цитрусовый">
       <div class="tags-input-hint">Эти теги становятся кликабельными фильтрами на сайте.</div>
     </div>
     <div class="row3">
@@ -223,8 +228,9 @@
       <div class="field"><label>Порядок (число)</label><input type="number" id="it_sort_order" value="0"></div>
       <div class="field"><label><input type="checkbox" id="it_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
     </div>
+    <div class="preview-label">Предпросмотр напитка · текущий текст и фото</div><div class="live-preview" id="it_preview"></div>
     <div class="modal-actions">
-      <button class="btn danger" id="deleteItemBtn" style="margin-right:auto;display:none;">Удалить</button>
+      <button type="button" class="btn secondary" id="duplicateItemBtn">Создать копию</button><button class="btn danger" id="deleteItemBtn" style="margin-right:auto;display:none;">Удалить</button>
       <button class="btn secondary" data-close-modal="itemModal">Отмена</button>
       <button class="btn" id="saveItemBtn">Сохранить</button>
     </div>
@@ -235,9 +241,10 @@
   <div class="modal">
     <h3 id="newsModalTitle">Новость</h3>
     <input type="hidden" id="news_id">
-    <div class="field"><label>Текст новости</label><textarea id="news_message" placeholder="Например: Изменили состав лимонада"></textarea></div>
+    <div class="field"><label for="news_title">Заголовок (необязательно)</label><input id="news_title"></div><div class="field"><label for="news_text_align">Выравнивание текста</label><select id="news_text_align"><option value="left">Слева</option><option value="center">По центру</option><option value="right">Справа</option></select></div><div class="field"><label><input type="checkbox" id="news_pinned"> Закрепить перед обычными новостями</label></div><div class="field"><label>Текст новости</label><textarea lang="ru" spellcheck="true" id="news_message" placeholder="Например: Изменили состав лимонада"></textarea></div>
     <div class="field"><label>Порядок (число, меньше — раньше в ленте)</label><input type="number" id="news_sort_order" value="0"></div>
     <div class="field"><label><input type="checkbox" id="news_published" checked style="width:auto;margin-right:8px;"> Показывать на сайте</label></div>
+    <div class="preview-label">Предпросмотр новости</div><div class="live-preview" id="news_preview"></div>
     <div class="modal-actions">
       <button class="btn danger" id="deleteNewsBtn" style="margin-right:auto;display:none;">Удалить</button>
       <button class="btn secondary" data-close-modal="newsModal">Отмена</button>
@@ -250,6 +257,7 @@
 
 <script src="../assets/config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../assets/guide-ui.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>

@@ -1,0 +1,53 @@
+/* v3: extends the existing chocolate / gold identity. */
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--gold-bright);outline-offset:4px}
+.hero{min-height:54vh;padding-top:115px}
+.section,.intro{max-width:1320px}
+.section-head{max-width:none}
+.section-head[data-align]{text-align:var(--align,left)}
+[data-align=left]{--align:left;text-align:left}
+[data-align=center]{--align:center;text-align:center}
+[data-align=right]{--align:right;text-align:right}
+.section-head[data-align=left] h2{justify-content:flex-start}
+.section-head[data-align=center] h2{justify-content:center}
+.section-head[data-align=right] h2{justify-content:flex-end}
+.section-desc{font-size:1rem;line-height:1.8;white-space:pre-line;max-width:800px;padding:12px 0 0;margin:8px 0 0;text-align:inherit}
+.section-desc:before{display:none}
+[data-align=center] .section-desc{margin-inline:auto}
+[data-align=right] .section-desc{margin-left:auto}
+.card{min-width:0;scroll-margin-top:150px}
+.card-top{gap:12px;align-items:flex-start}
+.card-top>div:first-child{flex:1;min-width:0}
+.card h3{line-height:1.35}
+.card .teaser,.card .detail-row,.card .present{font-size:1rem;line-height:1.7;white-space:pre-line}
+.card .drink-flags{position:static;max-width:100%;margin:0 0 14px;justify-content:flex-start;pointer-events:auto}
+[data-align=center] .drink-flags,[data-align=center] .tags{justify-content:center}
+[data-align=right] .drink-flags,[data-align=right] .tags{justify-content:flex-end}
+.drink-flag{font-size:12px;min-height:28px}
+.tag{font-family:inherit;cursor:pointer}
+.card summary{min-height:44px;padding-block:12px}
+.news-ticker.lapsha-news-v2{padding-block:32px}
+.lapsha-news-card{width:clamp(340px,46vw,590px);min-height:220px;padding:26px;flex-shrink:0}
+.lapsha-news-card.is-pinned{border-color:var(--gold)}
+.news-heading{font:600 clamp(24px,3vw,32px)/1.2 var(--font-head);margin:0 0 16px}
+.lapsha-news-message{font:400 1rem/1.75 var(--font-body);white-space:pre-line;overflow-wrap:anywhere}
+.lapsha-news-index,.lapsha-news-date,.lapsha-news-count,.lapsha-news-kicker{font-size:12px}
+.lapsha-news-subtitle{font-size:14px}
+.lapsha-news-controls{display:flex}
+.lapsha-news-btn{width:44px;height:44px;font-size:20px}
+.lapsha-news-btn:disabled{opacity:.3;cursor:default}
+.lapsha-news-viewport{cursor:grab}
+.lapsha-news-viewport.dragging{cursor:grabbing;scroll-snap-type:none;user-select:none}
+.quick-find-input{font-size:16px}
+.quick-find-panel{max-height:80dvh;color:var(--text)}
+.quick-find-meta{font-size:13px}
+.quick-find-fab{bottom:calc(18px + env(safe-area-inset-bottom));width:52px;height:52px}
+.back-to-top{bottom:calc(80px + env(safe-area-inset-bottom))}
+.group-desc{font-size:1rem;line-height:1.75;white-space:pre-line;margin-bottom:22px;color:var(--text-muted)}
+.menu-tools{max-width:1272px;margin:24px auto 0;padding:16px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.menu-tools button,.favorite-toggle{border:1px solid var(--line-strong);background:var(--surface);color:var(--gold-bright);padding:10px 14px;border-radius:24px;font:inherit;cursor:pointer;min-height:44px}
+.menu-tools button[aria-pressed=true],.favorite-toggle[aria-pressed=true]{background:var(--gold);color:var(--bg)}
+.favorite-toggle{margin-top:16px;font-size:14px}
+.load-error{padding:40px 24px;text-align:center}
+@media(max-width:720px){.hero{min-height:440px;padding-top:140px}.lapsha-news-card{width:calc(100vw - 64px);min-height:210px;padding:20px}.lapsha-news-head{align-items:flex-start}.lapsha-news-controls{gap:4px}.lapsha-news-shell{padding-inline:16px}.lapsha-news-meta{flex-wrap:wrap;gap:8px}.section-desc{font-size:1rem}.section{padding-top:48px}.menu-tools{padding:12px 18px}.quick-find-head{padding:10px}.quick-find-panel{padding-bottom:env(safe-area-inset-bottom)}.section-head h2{font-size:clamp(28px,8vw,40px)}}
+@media print{.menu-tools,.favorite-toggle{display:none}}

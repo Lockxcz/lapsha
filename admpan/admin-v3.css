@@ -1,0 +1,16 @@
+body{padding-bottom:0;font-size:16px}
+input,textarea,select{font-size:16px!important}
+input[type=checkbox]{width:auto!important;min-height:auto!important}
+textarea{line-height:1.65;min-height:110px}
+.modal{max-width:880px;width:min(880px,96vw);max-height:94dvh;overflow:auto;overscroll-behavior:contain}
+.modal-actions{position:sticky;bottom:-24px;background:var(--surface);padding:16px 0;z-index:2;flex-wrap:wrap;border-top:1px solid var(--line)}
+.live-preview{background:var(--bg);padding:22px;border:1px solid var(--line);border-radius:16px;margin:12px 0 24px;font-family:var(--font-body)}
+.live-preview .card,.live-preview .section-head{opacity:1;transform:none;margin:0}
+.live-preview .lapsha-news-card{width:100%;min-height:160px}
+.live-preview .card{max-width:520px;margin:auto}
+.live-preview .section-head h2{font-size:32px;color:var(--text)}
+.preview-label{font-size:14px;color:var(--gold);margin-top:20px}
+.table-panel{overflow-x:auto}
+.btn,.side-link{min-height:44px}
+.upload-row{flex-wrap:wrap}
+@media(max-width:720px){.admin-shell{flex-direction:column}.sidebar{position:static;width:100%;height:auto;display:flex;flex-wrap:wrap;gap:4px;padding:16px}.sidebar .brand{width:100%}.sidebar .spacer{display:none}.side-link{padding:10px;font-size:14px}.content{margin-left:0;padding:20px 14px;min-width:0;width:100%}.modal{padding:20px 14px;width:100%;max-height:100dvh;border-radius:16px 16px 0 0}.modal-overlay{padding:0;align-items:flex-end}.row2,.row3{grid-template-columns:1fr}.modal-actions{bottom:-20px}.live-preview{padding:12px}.modal-actions .btn{flex:1;justify-content:center}}

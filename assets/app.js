@@ -13,8 +13,11 @@
   const clearFilterBtn = document.getElementById('clearFilter');
 
   let activeTag = null;
+  let favoritesOnly=false;
+  let favorites=new Set();
+  try{const saved=JSON.parse(localStorage.getItem('lapsha-favorites-v3')||'[]');if(Array.isArray(saved))favorites=new Set(saved);}catch{}
 
-  function esc(s){ return (s==null?'':String(s)); }
+
 
   function publicUrl(path){
     if(!path) return '';
@@ -38,7 +41,7 @@
 
     document.title = data.site_title || 'Гид по барному меню';
     document.getElementById('heroEyebrow').textContent = data.hero_eyebrow || '';
-    document.getElementById('heroTitle').innerHTML = data.hero_title || '';
+    document.getElementById('heroTitle').innerHTML = esc(data.hero_title || '').replace(/&lt;(\/?em)&gt;/g,'<$1>');
     document.getElementById('heroSubtitle').textContent = data.hero_subtitle || '';
     document.getElementById('heroQuote').textContent = data.hero_quote ? `«${data.hero_quote}»` : '';
 
@@ -46,8 +49,8 @@
     const logoBox = document.getElementById('heroLogo');
     if(data.logo_url){
       const url = publicUrl(data.logo_url);
-      brand.innerHTML = `<img src="${url}" alt="Логотип">${esc(data.site_title||'')}`;
-      logoBox.innerHTML = `<img class="hero-logo" src="${url}" alt="${esc(data.site_title||'Логотип')}">`;
+      brand.innerHTML = `<img src="${esc(url)}" alt="Логотип">${esc(data.site_title||'')}`;
+      logoBox.innerHTML = `<img class="hero-logo" src="${esc(url)}" alt="${esc(data.site_title||'Логотип')}">`;
     } else {
       brand.innerHTML = `<span class="ring"></span>${esc(data.site_title||'Гид')}`;
       logoBox.innerHTML = `<div class="hero-logo placeholder">${esc(data.site_title||'ГИД')}</div>`;
@@ -59,165 +62,27 @@
     }
   }
 
-  // ---------- NEWS TICKER ----------
-  // Бегущая строка обновлений (тексты задаются в админ-панели, таблица `news`).
-  // Автопрокрутка идёт слева направо и её можно "полистать" мышью/пальцем
-  // или стрелками — при взаимодействии автопрокрутка приостанавливается.
-  function newsItemHTML(n){
-    const d = n.created_at ? new Date(n.created_at) : null;
-    const dateStr = d ? d.toLocaleDateString('ru-RU', { day:'2-digit', month:'2-digit' }) : '';
-    return `<span class="news-item">${dateStr?`<span class="date">${dateStr}</span>`:''}<span class="dot"></span>${esc(n.message)}</span>`;
-  }
-
   async function loadNews(){
-    const ticker = document.getElementById('newsTicker');
-    if(!ticker) return;
-    const { data } = await sb.from('news').select('*').eq('published', true).order('sort_order').order('created_at', { ascending:false });
-    if(!data || !data.length) return;
-
-    const viewport = document.getElementById('newsViewport');
-    const track = document.getElementById('newsTrack');
-    const prevBtn = document.getElementById('newsPrev');
-    const nextBtn = document.getElementById('newsNext');
-
-    // items are duplicated so the strip can loop seamlessly
-    track.innerHTML = data.map(newsItemHTML).join('') + data.map(newsItemHTML).join('');
-    ticker.classList.add('show');
-
-    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let halfWidth = track.scrollWidth / 2;
-    let paused = reduceMotion;
-    let resumeTimer = null;
-
-    // if content is shorter than the viewport there's nothing to loop/drag
-    if(halfWidth <= viewport.clientWidth){ return; }
-
-    viewport.scrollLeft = halfWidth;
-
-    function pause(){
-      paused = true;
-      clearTimeout(resumeTimer);
-    }
-    function resumeSoon(delay){
-      clearTimeout(resumeTimer);
-      if(reduceMotion) return;
-      resumeTimer = setTimeout(()=>{ paused = false; }, delay || 2500);
-    }
-    function wrap(){
-      if(viewport.scrollLeft <= 0) viewport.scrollLeft += halfWidth;
-      else if(viewport.scrollLeft >= halfWidth * 2) viewport.scrollLeft -= halfWidth;
-    }
-
-    const SPEED = 0.35; // px per frame, moves content left → right
-    function tick(){
-      if(!paused){
-        viewport.scrollLeft -= SPEED;
-        wrap();
-      }
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-
-    // ---- manual drag (mouse + touch) ----
-    let dragging = false, startX = 0, startScroll = 0;
-    viewport.addEventListener('pointerdown', e=>{
-      dragging = true;
-      pause();
-      viewport.classList.add('dragging');
-      startX = e.clientX;
-      startScroll = viewport.scrollLeft;
-      viewport.setPointerCapture(e.pointerId);
-    });
-    viewport.addEventListener('pointermove', e=>{
-      if(!dragging) return;
-      viewport.scrollLeft = startScroll - (e.clientX - startX);
-      wrap();
-    });
-    function endDrag(){
-      if(!dragging) return;
-      dragging = false;
-      viewport.classList.remove('dragging');
-      resumeSoon();
-    }
-    viewport.addEventListener('pointerup', endDrag);
-    viewport.addEventListener('pointercancel', endDrag);
-    viewport.addEventListener('mouseenter', pause);
-    viewport.addEventListener('mouseleave', ()=>{ if(!dragging) resumeSoon(400); });
-
-    // ---- prev / next buttons: step by roughly one viewport width ----
-    function step(dir){
-      pause();
-      viewport.scrollLeft += dir * viewport.clientWidth * 0.8;
-      wrap();
-      resumeSoon();
-    }
-    prevBtn.addEventListener('click', ()=> step(-1));
-    nextBtn.addEventListener('click', ()=> step(1));
-
-    window.addEventListener('resize', ()=>{ halfWidth = track.scrollWidth / 2; });
+    const {data,error}=await sb.from('news').select('*').eq('published',true).order('sort_order').order('created_at',{ascending:false});
+    if(error) throw error;
+    window.GuideUI.renderNews(document.getElementById('newsTicker'),data||[]);
   }
 
-  function tagChip(t){
-    return `<span class="tag" data-tag="${esc(t)}">${esc(t)}</span>`;
-  }
-
-  function cardHTML(item){
-    const tags = (item.mood_tags||[]).map(tagChip).join('');
-    const hasDetail = item.taste || item.aroma || item.aftertaste || item.presentation || item.who_for || item.fact || item.composition;
-    let detail = '';
-    if(hasDetail){
-      detail += `<details>`;
-      detail += `<summary>Подробнее</summary>`;
-      if(item.composition) detail += `<div class="detail-row"><span class="k">Состав</span>${esc(item.composition).replace(/\n/g,', ')}</div>`;
-      if(item.taste) detail += `<div class="detail-row"><span class="k">Вкус</span>${esc(item.taste)}</div>`;
-      if(item.aroma) detail += `<div class="detail-row"><span class="k">Аромат</span>${esc(item.aroma)}</div>`;
-      if(item.aftertaste) detail += `<div class="detail-row"><span class="k">Послевкусие</span>${esc(item.aftertaste)}</div>`;
-      if(item.who_for) detail += `<div class="detail-row"><span class="k">Кому рекомендовать</span>${esc(item.who_for)}</div>`;
-      if(item.fact) detail += `<div class="detail-row"><span class="k">Интересный факт</span>${esc(item.fact)}</div>`;
-      if(item.pairing) detail += `<div class="detail-row"><span class="k">Сочетание</span>${esc(item.pairing)}</div>`;
-      if(item.presentation) detail += `<div class="present">«${esc(item.presentation)}»</div>`;
-      detail += `</details>`;
-    }
-    const photo = item.image_url ? `<div class="card-photo-wrap" tabindex="0" role="button" aria-label="Открыть фото «${esc(item.name)}» на весь экран" data-caption="${esc(item.name)}"><img class="card-photo" loading="lazy" decoding="async" src="${publicUrl(item.image_url)}" alt="${esc(item.name)}" onerror="this.closest('.card-photo-wrap').remove()"><span class="photo-zoom-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span></div>` : '';
-    const searchBlob = [item.name,item.name_en,item.teaser,item.taste,item.aroma,item.aftertaste,item.composition,item.who_for,item.fact,item.presentation,(item.mood_tags||[]).join(' ')].join(' ').toLowerCase();
-    return `<div class="card" data-search="${esc(searchBlob)}" data-tags="${esc((item.mood_tags||[]).join('|').toLowerCase())}">
-      ${photo}
-      <div class="card-top">
-        <div>
-          <h3>${esc(item.name)}</h3>
-          ${item.name_en?`<div class="eng">${esc(item.name_en)}</div>`:''}
-        </div>
-        ${item.price?`<div class="eng">${esc(item.price)}</div>`:''}
-      </div>
-      ${tags?`<div class="tags">${tags}</div>`:''}
-      ${item.teaser?`<p class="teaser">${esc(item.teaser)}</p>`:''}
-      ${detail}
-    </div>`;
-  }
-
-  function sectionHead(cat){
-    const icon = window.ICONS && window.ICONS[cat.icon] ? `<span class="icon" style="width:26px;height:26px;color:var(--gold)">${window.ICONS[cat.icon]}</span>` : '';
-    return `<div class="section-head">
-      <div>
-        <span class="section-num">${String(cat._num).padStart(2,'0')} / КАТЕГОРИЯ</span>
-        <h2>${icon}${esc(cat.title)}</h2>
-      </div>
-      ${cat.description?`<p class="section-desc">${esc(cat.description)}</p>`:''}
-    </div>`;
-  }
-
+  const {cardHTML: renderCard, sectionHead, normalize, esc} = window.GuideUI;
+  const cardHTML = item=>renderCard(item,publicUrl);
   function tipHTML(tip){
     if(!tip) return '';
     return `<div class="staff-tip"><span class="lbl">Совет официанту</span>${esc(tip)}</div>`;
   }
 
   async function loadContent(){
-    const [{data:cats}, {data:groups}, {data:items}] = await Promise.all([
+    const responses = await Promise.all([
       sb.from('categories').select('*').eq('published',true).order('sort_order'),
       sb.from('item_groups').select('*').order('sort_order'),
       sb.from('items').select('*').eq('published',true).order('sort_order'),
     ]);
-    if(!cats) return;
+    const failure=responses.find(r=>r.error); if(failure) throw failure.error;
+    const [cats,groups,items]=responses.map(r=>r.data||[]);
 
     const groupsByCat = {};
     (groups||[]).forEach(g=>{ (groupsByCat[g.category_id] ||= []).push(g); });
@@ -244,9 +109,9 @@
         catGroups.forEach(g=>{
           const gi = catItems.filter(it=>it.group_id===g.id);
           if(!gi.length) return;
-          body += `<div class="spirit-group"><h4>${esc(g.title)}</h4><div class="grid">${gi.map(cardHTML).join('')}</div></div>`;
+          body += `<div class="spirit-group"><h4>${esc(g.title)}</h4>${g.description?`<p class="group-desc">${esc(g.description)}</p>`:''}<div class="grid">${gi.map(cardHTML).join('')}</div></div>`;
         });
-        const ungrouped = catItems.filter(it=>!it.group_id);
+        const ungrouped = catItems.filter(it=>!catGroups.some(g=>g.id===it.group_id));
         if(ungrouped.length) body += `<div class="grid">${ungrouped.map(cardHTML).join('')}</div>`;
       } else {
         body += catItems.length ? `<div class="grid">${catItems.map(cardHTML).join('')}</div>`
@@ -261,6 +126,7 @@
     });
 
     initInteractions();
+    document.dispatchEvent(new Event('guide:ready'));
   }
 
   function initInteractions(){
@@ -418,7 +284,7 @@
   }
 
   function applyFilters(query){
-    const q = (query!==undefined ? query : searchInput.value).trim().toLowerCase();
+    const q = normalize(query!==undefined ? query : searchInput.value);
 
     if(activeTag){
       filterBar.classList.add('show');
@@ -432,20 +298,21 @@
       let sectionHasMatch = false;
       const cards = sec.querySelectorAll('.card[data-search]');
       cards.forEach(card=>{
-        const hay = card.dataset.search || '';
+        const hay = normalize((card.dataset.search || '')+' '+sec.querySelector('.section-head').textContent+' '+(card.closest('.spirit-group')?.querySelector('h4')?.textContent||''));
         const tags = (card.dataset.tags || '').split('|');
-        const matchesQuery = !q || hay.includes(q);
+        const matchesQuery = !q || q.split(' ').every(word=>hay.includes(word));
         const matchesTag = !activeTag || tags.includes(activeTag.toLowerCase());
-        const match = matchesQuery && matchesTag;
+        const match = matchesQuery && matchesTag && (!favoritesOnly||favorites.has(card.dataset.id));
         card.style.display = match ? '' : 'none';
         if(match) sectionHasMatch = true;
       });
+      sec.querySelectorAll('.spirit-group').forEach(group=>{group.style.display=[...group.querySelectorAll('.card')].some(c=>c.style.display!=='none')?'':'none';});
       // sections without cards (spirit lists use plain text, always considered visible unless filtering)
-      if(!q && !activeTag){ sec.style.display=''; sectionHasMatch = true; }
+      if(!q && !activeTag && !favoritesOnly){ sec.style.display=''; sectionHasMatch = true; }
       else sec.style.display = sectionHasMatch ? '' : 'none';
       if(sectionHasMatch) anyVisible = true;
     });
-    noResults.style.display = ((q||activeTag) && !anyVisible) ? 'block' : 'none';
+    noResults.style.display = ((q||activeTag||favoritesOnly) && !anyVisible) ? 'block' : 'none';
   }
 
   document.querySelectorAll('.tag').forEach(t=>{
@@ -455,9 +322,12 @@
     });
   });
 
+  document.addEventListener('guide:reset',()=>{activeTag=null;favoritesOnly=false;searchInput.value='';applyFilters();document.getElementById('favoritesOnly')?.setAttribute('aria-pressed','false');});
+  document.addEventListener('guide:favorites',e=>{favorites=new Set(e.detail.ids);favoritesOnly=e.detail.only;applyFilters();});
   (async function init(){
-    await loadSettings();
-    await loadContent();
-    loadNews();
+    mainEl.textContent='Загружаем меню…';
+    try { await loadSettings(); await loadContent(); }
+    catch(error){mainEl.innerHTML='<p class="load-error">Не удалось загрузить меню. Проверьте подключение и <a href="">обновите страницу</a>.</p>';console.error(error);}
+    try { await loadNews(); } catch(error){console.warn('Новости недоступны',error);}
   })();
 })();
