@@ -96,10 +96,10 @@
   $('loginForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
     $('loginError').textContent = '';
-    const email = $('loginEmail').value.trim();
+    const email = window.lapshaLoginEmail($('loginEmail').value);
     const password = $('loginPassword').value;
     const { error } = await sb.auth.signInWithPassword({ email, password });
-    if(error){ $('loginError').textContent = 'Неверный email или пароль.'; return; }
+    if(error){ $('loginError').textContent = 'Неверный логин или пароль.'; return; }
     showDashboard();
   });
 
